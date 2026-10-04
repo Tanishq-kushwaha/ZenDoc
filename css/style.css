@@ -967,6 +967,9 @@ textarea.text-output { width: 100%; border: 1px solid var(--border); resize: ver
   .page-grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
   .form-row { flex-direction: column; gap: var(--space-3); }
   .form-group { flex: 1 1 auto; }
+
+  body:has(#toolWorkspace:not([hidden])) .quick-nav { display: none; }
+  body:has(#toolWorkspace:not([hidden])) { padding-bottom: 0; }
 }
 
 /* Extra-small phones */
