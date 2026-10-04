@@ -213,17 +213,30 @@ input, textarea, select { font: inherit; color: inherit; }
   max-width: 1400px;
   margin: 0 auto;
   min-height: calc(100dvh - 60px);
+  position: relative;
+}
+
+.layout::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;        /* top:0, right:auto, bottom:0, left:0 */
+  width: 240px;              /* same as grid col 1 */
+  background: var(--bg-section);
+  border-right: 1px solid var(--border);
+  pointer-events: none;      /* never blocks clicks */
+  z-index: 0;
 }
 
 .sidebar {
-  background: var(--bg-section);
-  border-right: 1px solid var(--border);
+  background: transparent;  
+   border-right: none; 
   padding: var(--space-5) var(--space-3);
   position: sticky;
   top: 61px;
   align-self: start;
   height: calc(100dvh - 61px);
   overflow-y: auto;
+  z-index: 1;
 }
 
 .sidebar-nav { display: flex; flex-direction: column; gap: var(--space-5); }
@@ -829,7 +842,7 @@ textarea.text-output { width: 100%; border: 1px solid var(--border); resize: ver
   background: var(--bg-section);
   border-top: 1px solid var(--border);
   padding: var(--space-8) var(--space-5);
-  margin-top: var(--space-16);
+  margin-top: var(--space-8);
   text-align: center;
   font-size: var(--text-sm);
   color: var(--text-muted);
@@ -890,11 +903,16 @@ textarea.text-output { width: 100%; border: 1px solid var(--border); resize: ver
    .navbar-actions { margin-left: auto; }
 
    .footer {
-    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+     margin-top: 0;           /* 20px */
+    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); 
   }
+
+    .layout::before { display: none; }
 
   /* Slide-in sidebar */
   .sidebar {
+    background: var(--bg-section);
+    border-right: 1px solid var(--border);
     position: fixed;
     top: 61px; bottom: 0; left: 0;
     width: min(80vw, 300px);
@@ -907,7 +925,7 @@ textarea.text-output { width: 100%; border: 1px solid var(--border); resize: ver
   .sidebar.open { transform: translateX(0); }
 
   .layout { grid-template-columns: 1fr; }
-  .main { padding: var(--space-5) var(--space-4) 90px; }
+  .main {  padding: var(--space-5) var(--space-4) var(--space-4); }
 
   .dashboard-header { padding: var(--space-4) 0 var(--space-6); }
   .dashboard-header h1 { font-size: var(--text-xl); }
