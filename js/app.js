@@ -50,6 +50,10 @@ const state = {
   processing: false,
 };
 
+/**
+ * Application Initialization
+ * Jab website ka DOM load ho jata hai, tab sabse pehle ye function chalta hai.
+ */
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initNav();
@@ -57,7 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initActions();
   initModal();
   initSearch();
-  switchTool('merge');
+  
+  // Dashboard ko setup karo aur by default dikhao
+  initDashboard(); 
+  showDashboard(); 
+  
   setupPdfJs();
 });
 
