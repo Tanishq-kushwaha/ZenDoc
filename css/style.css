@@ -452,3 +452,64 @@ body {
 
 
 
+/* ==========================================
+   DASHBOARD & CARDS UI
+   Mobile-first responsive grid for homepage
+   ========================================== */
+
+/* Dashboard container ki spacing */
+.home-dashboard {
+  padding: 2rem 0;
+}
+
+/* Dashboard heading ka alignment */
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Grid System: Screen size ke hisaab se cards ko arrange karega.
+   Mobile par 1 column, Desktop par multiple columns. */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Tool Card Styling: Clean and minimal aesthetic */
+.dashboard-card {
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease; /* Hover effect ke liye smooth transition */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02); /* Halka sa shadow 3D feel ke liye */
+}
+
+/* Hover Effect: Jab mouse card par jaye */
+.dashboard-card:hover {
+  transform: translateY(-4px); /* Card thoda upar uthega */
+  box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+  border-color: var(--primary-color, #6366f1); /* Brand color ka border */
+}
+
+/* Emoji Icon Size */
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Card Heading Text */
+.card-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color, #1e293b);
+}
+
+/* Card Description Text */
+.card-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted, #64748b);
+  line-height: 1.4;
+}
