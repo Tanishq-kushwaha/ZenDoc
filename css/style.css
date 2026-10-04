@@ -72,6 +72,12 @@
   --card-shadow:       0 4px 20px rgba(0, 0, 0, 0.3);
   --card-hover-shadow: 0 20px 40px -12px rgba(139, 92, 246, 0.35);
 }
+body{
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+}
 
 /* ============================================
    2. RESET & BASE
@@ -842,7 +848,7 @@ textarea.text-output { width: 100%; border: 1px solid var(--border); resize: ver
   background: var(--bg-section);
   border-top: 1px solid var(--border);
   padding: var(--space-8) var(--space-5);
-  margin-top: var(--space-8);
+  margin-top: 0;   
   text-align: center;
   font-size: var(--text-sm);
   color: var(--text-muted);
@@ -902,8 +908,7 @@ textarea.text-output { width: 100%; border: 1px solid var(--border); resize: ver
 
    .navbar-actions { margin-left: auto; }
 
-   .footer {
-     margin-top: 0;           /* 20px */
+   .footer {   
     padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); 
   }
 
