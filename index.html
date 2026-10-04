@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,46 +8,48 @@
   <title>ZenDoc — Private Document Tools</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
-    integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer">
+        integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
   <div id="app">
-    <!-- Navbar -->
+
+    <!-- ============ NAVBAR ============ -->
     <header class="navbar" role="banner">
       <div class="navbar-inner">
         <a href="#" class="logo" id="logoBtn" aria-label="ZenDoc Home">
           <span class="logo-icon" aria-hidden="true">📄</span>
           <span class="logo-text">ZenDoc</span>
         </a>
+
         <div class="navbar-search">
-          <input type="search" id="toolSearch" placeholder="Search tools..." aria-label="Search tools"
-            autocomplete="off" />
+          <input type="search" id="toolSearch" placeholder="Search tools..." aria-label="Search tools" autocomplete="off" />
         </div>
+
         <div class="navbar-actions">
           <button type="button" id="darkModeBtn" class="icon-btn" aria-label="Toggle dark mode" title="Dark mode">
             <span class="icon-sun">☀️</span>
             <span class="icon-moon">🌙</span>
           </button>
-          <a href="https://github.com/Tanishq-kushwaha" class="icon-btn" target="_blank" rel="noopener"
-            aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="https://github.com/Tanishq-kushwaha" class="icon-btn" target="_blank" rel="noopener" aria-label="GitHub">
+            <i class="fa-brands fa-github"></i>
+          </a>
         </div>
-        <button type="button" id="sidebarToggle" class="icon-btn sidebar-toggle" aria-label="Toggle menu"
-          aria-expanded="false">☰</button>
+
+        <button type="button" id="sidebarToggle" class="icon-btn sidebar-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
       </div>
     </header>
 
     <div class="layout">
-      <!-- Sidebar -->
+      <!-- ============ SIDEBAR ============ -->
       <aside class="sidebar" id="sidebar" role="navigation" aria-label="Tools">
         <nav class="sidebar-nav">
           <div class="nav-group">
             <h3 class="nav-group-title">PDF</h3>
-            <button type="button" class="nav-item active" data-tool="merge">Merge PDFs</button>
+            <button type="button" class="nav-item" data-tool="merge">Merge PDFs</button>
             <button type="button" class="nav-item" data-tool="split">Split PDF</button>
             <button type="button" class="nav-item" data-tool="compress-pdf">Compress PDF</button>
             <button type="button" class="nav-item" data-tool="delete-pages">Delete Pages</button>
@@ -88,46 +89,92 @@
         </nav>
       </aside>
 
-      <!-- Main -->
-      <!-- Main Application Area -->
+      <!-- ============ MAIN ============ -->
       <main class="main" id="main" role="main">
-        
-        <!-- ==========================================
-             1. HOME DASHBOARD (Dynamic Grid View)
-             Ye view mobile aur desktop users ko sabhi 27 features 
-             ek clean grid me dikhayega.
-             ========================================== -->
-        <div id="homeDashboard" class="home-dashboard">
+
+        <!-- ============ HOME DASHBOARD ============ -->
+        <section id="homeDashboard" class="home-dashboard">
           <div class="dashboard-header">
             <h1>What do you want to do today?</h1>
-            <p>Select a tool below. 100% private, processed in your browser.</p>
+            <p>Pick a tool below · 100% private · processed in your browser.</p>
           </div>
-          <!-- Is div ke andar app.js se dynamically cards ban kar aayenge -->
-          <div class="tool-grid" id="toolGrid"></div>
-        </div>
 
-        <!-- ==========================================
-             2. TOOL WORKSPACE (File Upload & Options)
-             Jab user dashboard se koi tool chunta hai (jaise Merge), 
-             tab ye hissa show hoga aur dashboard hide ho jayega.
-             ========================================== -->
+          <!-- Sticky search + category chips -->
+          <div class="service-toolbar">
+            <div class="search-hero">
+              <input type="search" id="dashboardSearch" placeholder="Search tools (e.g. merge, rotate)..." aria-label="Search tools" autocomplete="off" />
+            </div>
+            <div class="chip-row" id="chipRow" role="tablist" aria-label="Tool categories">
+              <button type="button" class="chip is-active" data-cat="all"     aria-pressed="true">All</button>
+              <button type="button" class="chip" data-cat="pdf"     aria-pressed="false">📄 PDF</button>
+              <button type="button" class="chip" data-cat="convert" aria-pressed="false">🔄 Convert</button>
+              <button type="button" class="chip" data-cat="image"   aria-pressed="false">🖼️ Image</button>
+              <button type="button" class="chip" data-cat="utils"   aria-pressed="false">🔧 Utils</button>
+            </div>
+          </div>
+
+          <!-- Group: PDF -->
+          <section class="service-group" data-cat="pdf" data-open="true">
+            <button type="button" class="service-group-header" aria-expanded="true">
+              <span>📄 PDF Tools</span>
+              <span class="count-pill">13</span>
+              <span class="caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="service-grid" id="grid-pdf"></div>
+          </section>
+
+          <!-- Group: Convert -->
+          <section class="service-group" data-cat="convert" data-open="true">
+            <button type="button" class="service-group-header" aria-expanded="true">
+              <span>🔄 Convert</span>
+              <span class="count-pill">2</span>
+              <span class="caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="service-grid" id="grid-convert"></div>
+          </section>
+
+          <!-- Group: Image -->
+          <section class="service-group" data-cat="image" data-open="true">
+            <button type="button" class="service-group-header" aria-expanded="true">
+              <span>🖼️ Image Tools</span>
+              <span class="count-pill">7</span>
+              <span class="caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="service-grid" id="grid-image"></div>
+          </section>
+
+          <!-- Group: Utils -->
+          <section class="service-group" data-cat="utils" data-open="true">
+            <button type="button" class="service-group-header" aria-expanded="true">
+              <span>🔧 Utilities</span>
+              <span class="count-pill">5</span>
+              <span class="caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="service-grid" id="grid-utils"></div>
+          </section>
+
+          <p id="noResults" hidden style="text-align:center;padding:40px 20px;color:var(--text-muted)">
+            No tools match your search.
+          </p>
+        </section>
+
+        <!-- ============ TOOL WORKSPACE ============ -->
         <div id="toolWorkspace" hidden>
           <div class="tool-header">
+            <button type="button" class="back-btn" id="backToTools">← All tools</button>
             <h1 id="toolTitle">Merge PDFs</h1>
-            <p id="toolDesc" class="tool-desc">Combine multiple PDFs into a single document. Files never leave your browser.</p>
+            <p id="toolDesc" class="tool-desc">Combine multiple PDFs into a single document.</p>
           </div>
 
-          <!-- Upload Zone -->
           <div class="upload-zone" id="dropZone" tabindex="0" role="button" aria-label="Upload files">
             <div class="upload-icon" aria-hidden="true">⬆️</div>
             <p class="upload-title">Drag & drop files here</p>
             <p class="upload-subtitle">or</p>
-            <button type="button" class="btn btn-primary" id="chooseFilesBtn">Choose Files</button>
+            <button type="button" class="btn" id="chooseFilesBtn">Choose Files</button>
             <input type="file" id="fileInput" hidden multiple />
             <p class="upload-hint" id="uploadHint">PDF files · Max 50MB each</p>
           </div>
 
-          <!-- File List Area -->
           <div class="file-list-wrap" id="fileListWrap" hidden>
             <div class="file-list-header">
               <span id="fileCount">0 files</span>
@@ -136,10 +183,8 @@
             <div class="file-list" id="fileList" role="list"></div>
           </div>
 
-          <!-- Tool Options Panel (Jaise compress quality, rotate angle) -->
           <div class="options-panel" id="optionsPanel" hidden></div>
 
-          <!-- Processing Progress Bar -->
           <div class="progress-container" id="progressContainer" hidden>
             <div class="progress-bar-track">
               <div class="progress-bar" id="progressBar" style="width:0%"></div>
@@ -147,38 +192,36 @@
             <span class="progress-text" id="progressText">Processing...</span>
           </div>
 
-          <!-- Action Buttons (Process / Preview) -->
           <div class="actions" id="actionsBar" hidden>
-            <button type="button" class="btn btn-primary btn-lg" id="processBtn" disabled>Process</button>
-            <button type="button" class="btn btn-secondary" id="previewBtn" hidden>Preview</button>
+            <button type="button" class="btn btn-lg" id="processBtn" disabled>Process</button>
           </div>
 
-          <!-- Result Area (Download button ya extracted text yaha dikhega) -->
           <div class="result-area" id="resultArea" hidden></div>
         </div>
       </main>
     </div>
 
-    <!-- Footer -->
+    <!-- ============ FOOTER ============ -->
     <footer class="footer" role="contentinfo">
-      <p>Your files never leave your browser · <span id="appVersion">v1.0.0</span> · <a href="#"
-          id="privacyLink">Privacy</a></p>
-
-      <div class="container text-center">
-        <p class="footer-text">
-          Designed & developed by
-          <span class="developer-name"><a href="https://tanishq-kushwaha.github.io/tanishq-portfolio/">Tanishq
-              Kushwaha</a></span>
-        </p>
-      </div>
-
+      <p>Your files never leave your browser · <span id="appVersion">v1.0.0</span> · <a href="#" id="privacyLink">Privacy</a></p>
+      <p style="margin-top:8px">
+        Designed &amp; developed by
+        <span class="developer-name"><a href="https://tanishq-kushwaha.github.io/tanishq-portfolio/">Tanishq Kushwaha</a></span>
+      </p>
     </footer>
   </div>
 
-  <!-- Toast container -->
+  <!-- ============ QUICK BOTTOM-NAV (mobile) ============ -->
+  <nav class="quick-nav" id="quickNav" aria-label="Quick categories">
+    <button type="button" data-jump="pdf"><span class="ico">📄</span>PDF</button>
+    <button type="button" data-jump="convert"><span class="ico">🔄</span>Convert</button>
+    <button type="button" data-jump="image"><span class="ico">🖼️</span>Image</button>
+    <button type="button" data-jump="utils"><span class="ico">🔧</span>Utils</button>
+  </nav>
+
+  <!-- ============ TOAST + MODAL ============ -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-  <!-- Modal -->
   <div class="modal-overlay" id="modalOverlay" hidden>
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-header">
@@ -190,15 +233,13 @@
     </div>
   </div>
 
-  <!-- Privacy modal content template -->
   <template id="privacyTemplate">
-    <p><strong>100% Client-Side.</strong> All processing happens in your browser. Files are never uploaded to any
-      server.</p>
+    <p><strong>100% Client-Side.</strong> All processing happens in your browser. Files are never uploaded to any server.</p>
     <p>No accounts, no tracking of document content, no third-party analytics on your files.</p>
-    <p>Libraries load from CDN (or local copies). Your documents stay on your device.</p>
+    <p>Libraries load from CDN. Your documents stay on your device.</p>
   </template>
 
-  <!-- Libraries from CDN (pdf.js loaded dynamically in app.js) -->
+  <!-- ============ LIBRARIES ============ -->
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
@@ -208,5 +249,4 @@
 
   <script type="module" src="js/app.js"></script>
 </body>
-
 </html>

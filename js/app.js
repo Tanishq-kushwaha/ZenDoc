@@ -1,18 +1,12 @@
 /**
  * ZenDoc — Main application (100% client-side)
  *
- * FIXES / IMPROVEMENTS in this version:
- *  - All previously nested functions (initDashboard, showDashboard, initNav,
- *    addFiles, updateFileUI, loadPageThumbs, runTool, executeTool,
- *    bindToolSpecificOptions) are now TOP-LEVEL (bug: they were defined
- *    inside switchTool and were unreachable from DOMContentLoaded).
- *  - Removed duplicate initNav.
- *  - Options panel is now populated via buildOptionsHTML(toolId) and
- *    bindRangeLabels() on every tool switch.
- *  - File input `accept` and `multiple` now update per tool.
- *  - Tool title, description, upload hint, and drop-zone visibility update.
- *  - Null-safe DOM access everywhere.
- *  - resetSubUI() centralises clearing the workspace between tools.
+ * Changes vs previous version:
+ *   - initDashboard() now populates 4 CATEGORY grids (pdf, convert, image, utils)
+ *   - New initDashboardUX() wires: dashboard search, category chips,
+ *     collapsible group headers, quick bottom-nav, back-to-tools button.
+ *   - Navbar search still filters the sidebar nav-item list.
+ *   - All previously nested functions moved to top-level (bug fix).
  */
 
 import {
@@ -59,6 +53,22 @@ const TOOL_META = {
   base64: { title: 'Base64 Converter', desc: 'Encode a file to Base64 or decode Base64 to a file.', multi: false, minFiles: 0, accept: 'both' },
 };
 
+/* Category mapping — used by dashboard groups & chips */
+const TOOL_CATEGORY = {
+  // PDF
+  merge: 'pdf', split: 'pdf', 'compress-pdf': 'pdf', 'delete-pages': 'pdf',
+  'extract-pages': 'pdf', rotate: 'pdf', reorder: 'pdf', 'watermark-pdf': 'pdf',
+  'page-numbers': 'pdf', 'remove-meta': 'pdf', protect: 'pdf', unlock: 'pdf',
+  'extract-text': 'pdf',
+  // Convert
+  'images-to-pdf': 'convert', 'pdf-to-images': 'convert',
+  // Image
+  'compress-img': 'image', resize: 'image', 'convert-img': 'image', crop: 'image',
+  'rotate-img': 'image', 'remove-exif': 'image', 'watermark-img': 'image',
+  // Utils
+  'file-info': 'utils', 'blank-pdf': 'utils', zip: 'utils', hash: 'utils', base64: 'utils',
+};
+
 /* Tools that render a page-thumbnail grid */
 const PAGE_TOOLS = ['delete-pages', 'extract-pages', 'rotate', 'reorder'];
 
@@ -71,6 +81,8 @@ const state = {
   selectedPages: new Set(),
   pageOrder: [],
   processing: false,
+  activeCategory: 'all',
+  searchQuery: '',
 };
 
 /* ------------------------------------------------------------------ */
@@ -83,10 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initActions();
   initModal();
   initSearch();
-
-  initDashboard();
+  initDashboard();      // populate category grids
+  initDashboardUX();    // wire chips / search / collapsible / quick-nav
   showDashboard();
-
   setupPdfJs();
 });
 
@@ -116,10 +127,9 @@ function initTheme() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Navigation / sidebar / modals / search                              */
+/* Navbar nav / sidebar / search / modal                               */
 /* ------------------------------------------------------------------ */
 function initNav() {
-  // Sidebar tool buttons
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
       const tool = btn.dataset.tool;
@@ -129,32 +139,31 @@ function initNav() {
     });
   });
 
-  // Mobile sidebar toggle
   document.getElementById('sidebarToggle')?.addEventListener('click', () => {
     const sb = document.getElementById('sidebar');
     const open = sb?.classList.toggle('open');
     document.getElementById('sidebarToggle')?.setAttribute('aria-expanded', String(!!open));
   });
 
-  // Logo → back to dashboard
   document.getElementById('logoBtn')?.addEventListener('click', (e) => {
     e.preventDefault();
     showDashboard();
   });
 
-  // Privacy modal
+  document.getElementById('backToTools')?.addEventListener('click', () => {
+    showDashboard();
+  });
+
   document.getElementById('privacyLink')?.addEventListener('click', (e) => {
     e.preventDefault();
     const tpl = document.getElementById('privacyTemplate');
-    openModal(
-      'Privacy',
-      tpl?.innerHTML || '',
-      '<button type="button" class="btn btn-primary" id="modalOk">OK</button>'
-    );
+    openModal('Privacy', tpl?.innerHTML || '',
+      '<button type="button" class="btn" id="modalOk">OK</button>');
     document.getElementById('modalOk')?.addEventListener('click', closeModal);
   });
 }
 
+/* Navbar search — filters sidebar nav items */
 function initSearch() {
   const input = document.getElementById('toolSearch');
   input?.addEventListener('input', () => {
@@ -175,7 +184,7 @@ function initModal() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Upload + actions                                                    */
+/* Upload + process                                                    */
 /* ------------------------------------------------------------------ */
 function initUpload() {
   const zone = document.getElementById('dropZone');
@@ -194,7 +203,6 @@ function initUpload() {
     zone.classList.remove('dragover');
     if (e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files);
   });
-
   input?.addEventListener('change', () => {
     if (input.files?.length) addFiles(input.files);
     input.value = '';
@@ -215,70 +223,211 @@ function initActions() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Dashboard                                                           */
+/* Dashboard: populate category grids                                  */
 /* ------------------------------------------------------------------ */
 function initDashboard() {
-  const grid = document.getElementById('toolGrid');
-  if (!grid) return;
+  const grids = {
+    pdf:     document.getElementById('grid-pdf'),
+    convert: document.getElementById('grid-convert'),
+    image:   document.getElementById('grid-image'),
+    utils:   document.getElementById('grid-utils'),
+  };
 
-  grid.innerHTML = '';
+  // Bail if structure missing
+  if (!grids.pdf) return;
+
+  // Clear
+  Object.values(grids).forEach(g => { if (g) g.innerHTML = ''; });
+
   Object.keys(TOOL_META).forEach(key => {
     const meta = TOOL_META[key];
-    const card = document.createElement('button');
-    card.type = 'button';
-    card.className = 'dashboard-card';
+    const cat = TOOL_CATEGORY[key] || 'utils';
+    const grid = grids[cat];
+    if (!grid) return;
 
     const icon = meta.accept === 'pdf' ? '📄'
       : meta.accept === 'image' ? '🖼️'
       : '🔧';
 
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'service-card';
+    card.dataset.tool = key;
+    card.dataset.cat = cat;
+
     card.innerHTML =
-      '<div class="card-icon">' + icon + '</div>' +
-      '<h3 class="card-title">' + meta.title + '</h3>' +
-      '<p class="card-desc">' + meta.desc + '</p>';
+      '<span class="card-icon" aria-hidden="true">' + icon + '</span>' +
+      '<span class="body">' +
+        '<span class="card-title">' + meta.title + '</span>' +
+        '<span class="card-desc">' + meta.desc + '</span>' +
+      '</span>';
 
     card.addEventListener('click', () => switchTool(key));
     grid.appendChild(card);
   });
+
+  // Fill in dynamic counts on group headers
+  Object.entries(grids).forEach(([cat, grid]) => {
+    if (!grid) return;
+    const count = grid.querySelectorAll('.service-card').length;
+    const group = grid.closest('.service-group');
+    const pill = group?.querySelector('.count-pill');
+    if (pill) pill.textContent = count;
+  });
 }
 
+/* ------------------------------------------------------------------ */
+/* Dashboard UX: search, chips, collapsible groups, quick-nav          */
+/* ------------------------------------------------------------------ */
+function initDashboardUX() {
+  const dashSearch = document.getElementById('dashboardSearch');
+  const chipRow = document.getElementById('chipRow');
+  const groups = document.querySelectorAll('.service-group');
+  const noResults = document.getElementById('noResults');
+
+  /* ---- 1. Category chips ---- */
+  chipRow?.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+
+    state.activeCategory = chip.dataset.cat || 'all';
+
+    // Active class + aria
+    chipRow.querySelectorAll('.chip').forEach(c => {
+      c.classList.toggle('is-active', c === chip);
+      c.setAttribute('aria-pressed', String(c === chip));
+    });
+
+    applyFilters();
+  });
+
+  /* ---- 2. Dashboard search ---- */
+  dashSearch?.addEventListener('input', () => {
+    state.searchQuery = dashSearch.value.trim().toLowerCase();
+    applyFilters();
+  });
+
+  /* ---- 3. Collapsible group headers ---- */
+  groups.forEach(group => {
+    const header = group.querySelector('.service-group-header');
+    header?.addEventListener('click', () => {
+      const open = group.dataset.open === 'true';
+      group.dataset.open = open ? 'false' : 'true';
+      header.setAttribute('aria-expanded', String(!open));
+    });
+  });
+
+  /* ---- 4. Quick bottom-nav jumps ---- */
+  document.getElementById('quickNav')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const cat = btn.dataset.jump;
+    if (!cat) return;
+
+    // Reset chip to "All" so the target group is visible
+    state.activeCategory = 'all';
+    chipRow?.querySelectorAll('.chip').forEach(c => {
+      c.classList.toggle('is-active', c.dataset.cat === 'all');
+      c.setAttribute('aria-pressed', String(c.dataset.cat === 'all'));
+    });
+    if (dashSearch) dashSearch.value = '';
+    state.searchQuery = '';
+    applyFilters();
+
+    // Expand target group and scroll to it
+    const group = document.querySelector('.service-group[data-cat="' + cat + '"]');
+    if (!group) return;
+    group.hidden = false;
+    group.dataset.open = 'true';
+    group.querySelector('.service-group-header')?.setAttribute('aria-expanded', 'true');
+
+    // Highlight active quick-nav button
+    document.querySelectorAll('#quickNav button').forEach(b => {
+      b.setAttribute('aria-current', String(b === btn));
+    });
+
+    // Scroll into view (respecting sticky toolbar)
+    const y = group.getBoundingClientRect().top + window.scrollY - 130;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+
+  /* ---- Filtering engine ---- */
+  function applyFilters() {
+    const cat = state.activeCategory;
+    const q = state.searchQuery;
+    let anyVisible = false;
+
+    groups.forEach(group => {
+      const groupCat = group.dataset.cat;
+
+      // Category visibility
+      const catMatch = cat === 'all' || groupCat === cat;
+      if (!catMatch) {
+        group.hidden = true;
+        return;
+      }
+
+      // Per-card search
+      let visibleCards = 0;
+      group.querySelectorAll('.service-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const matchesSearch = !q || text.includes(q);
+        card.hidden = !matchesSearch;
+        if (matchesSearch) visibleCards++;
+      });
+
+      if (visibleCards === 0) {
+        group.hidden = true;
+        return;
+      }
+
+      group.hidden = false;
+      anyVisible = true;
+
+      // Auto-expand when searching, so user sees matched cards immediately
+      if (q) {
+        group.dataset.open = 'true';
+        group.querySelector('.service-group-header')?.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    if (noResults) noResults.hidden = anyVisible;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Show / switch views                                                 */
+/* ------------------------------------------------------------------ */
 function showDashboard() {
   state.tool = 'home';
   document.getElementById('homeDashboard').hidden = false;
   document.getElementById('toolWorkspace').hidden = true;
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ------------------------------------------------------------------ */
-/* Tool switching                                                      */
-/* ------------------------------------------------------------------ */
 function switchTool(toolId) {
   const meta = TOOL_META[toolId];
   if (!meta) return;
 
-  // 1) View toggle
   document.getElementById('homeDashboard').hidden = true;
   document.getElementById('toolWorkspace').hidden = false;
 
-  // 2) Reset state
   state.tool = toolId;
   state.files = [];
   state.selectedPages.clear();
   state.pageOrder = [];
   state.processing = false;
 
-  // 3) Sidebar active highlight
   document.querySelectorAll('.nav-item').forEach(b => {
     b.classList.toggle('active', b.dataset.tool === toolId);
   });
 
-  // 4) Header text
   const titleEl = document.getElementById('toolTitle');
   const descEl = document.getElementById('toolDesc');
   if (titleEl) titleEl.textContent = meta.title;
   if (descEl) descEl.textContent = meta.desc;
 
-  // 5) Upload hint + drop-zone visibility
   const hint = document.getElementById('uploadHint');
   if (hint) {
     if (meta.accept === 'pdf') hint.textContent = 'PDF files · Max 50MB each';
@@ -289,14 +438,13 @@ function switchTool(toolId) {
   const dz = document.getElementById('dropZone');
   if (dz) dz.hidden = meta.accept === 'none';
 
-  // 6) File input accept + multiple
   const input = document.getElementById('fileInput');
   if (input) {
     input.accept = getAcceptForTool(toolId);
     input.multiple = !!meta.multi;
   }
 
-  // 7) Options panel (dynamic per-tool HTML)
+  // Options panel
   const optionsPanel = document.getElementById('optionsPanel');
   const optionsHtml = buildOptionsHTML(toolId);
   if (optionsPanel) {
@@ -311,11 +459,9 @@ function switchTool(toolId) {
     }
   }
 
-  // 8) Reset sub-UI (files list, actions, progress, results, page grid)
   resetSubUI();
-
-  // 9) Update file UI (handles minFiles = 0 for blank-pdf / base64)
   updateFileUI();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function resetSubUI() {
@@ -332,10 +478,6 @@ function resetSubUI() {
   setProgress(false);
 }
 
-/**
- * Bind tool-specific option handlers that depend on the current tool.
- * Called once per switchTool() after the options panel is rendered.
- */
 function bindToolSpecificOptions(toolId) {
   if (toolId === 'protect') {
     document.getElementById('showPass')?.addEventListener('change', (e) => {
@@ -350,7 +492,7 @@ function bindToolSpecificOptions(toolId) {
   if (toolId === 'resize') {
     document.getElementById('resizePreset')?.addEventListener('change', (e) => {
       const v = e.target.value;
-      if (!v || v.endsWith('%')) return; // % handled at process time
+      if (!v || v.endsWith('%')) return;
       const parts = v.split('x').map(Number);
       const tw = document.getElementById('targetW');
       const th = document.getElementById('targetH');
@@ -369,11 +511,8 @@ function addFiles(fileList) {
 
   const arr = Array.from(fileList);
   for (const f of arr) {
-    if (warnLargeFile(f)) {
-      showToast('Large file: ' + f.name + '. Processing may be slow.', 'warning');
-    }
+    if (warnLargeFile(f)) showToast('Large file: ' + f.name + '. Processing may be slow.', 'warning');
 
-    // Type validation per tool
     if (meta.accept === 'pdf'
       && f.type !== 'application/pdf'
       && !f.name.toLowerCase().endsWith('.pdf')) {
@@ -391,7 +530,6 @@ function addFiles(fileList) {
 
   updateFileUI();
 
-  // Auto-render page thumbnails for page-level PDF tools
   if (PAGE_TOOLS.includes(state.tool) && state.files[0]) {
     loadPageThumbs(state.files[0]);
   }
@@ -406,24 +544,17 @@ function updateFileUI() {
   const actions = document.getElementById('actionsBar');
   const processBtn = document.getElementById('processBtn');
 
-  // File list rendering
   if (state.files.length === 0) {
     if (wrap) wrap.hidden = true;
   } else {
     if (wrap) wrap.hidden = false;
-    if (count) {
-      count.textContent = state.files.length + ' file' + (state.files.length !== 1 ? 's' : '');
-    }
+    if (count) count.textContent = state.files.length + ' file' + (state.files.length !== 1 ? 's' : '');
 
     renderFileList(state.files, {
-      onRemove: (i) => {
-        state.files.splice(i, 1);
-        updateFileUI();
-      },
+      onRemove: (i) => { state.files.splice(i, 1); updateFileUI(); },
       sortable: !!meta.multi,
     });
 
-    // Attach reorder callback AFTER renderFileList wires up Sortable
     const listEl = document.getElementById('fileList');
     if (listEl) {
       listEl._onReorder = (oldI, newI) => {
@@ -435,7 +566,6 @@ function updateFileUI() {
     }
   }
 
-  // Actions bar + process button
   const needsFiles = meta.minFiles > 0;
   const hasEnough = state.files.length >= meta.minFiles;
 
@@ -447,7 +577,7 @@ function updateFileUI() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Page thumbnail grid (for delete / extract / rotate / reorder)       */
+/* Page thumbnail grid                                                 */
 /* ------------------------------------------------------------------ */
 async function loadPageThumbs(file) {
   const grid = document.getElementById('pageGrid');
@@ -481,7 +611,7 @@ async function loadPageThumbs(file) {
       div.appendChild(check);
 
       div.addEventListener('click', () => {
-        if (state.tool === 'reorder') return; // reorder uses drag only
+        if (state.tool === 'reorder') return;
         if (state.selectedPages.has(t.index)) {
           state.selectedPages.delete(t.index);
           div.classList.remove('selected');
@@ -501,7 +631,6 @@ async function loadPageThumbs(file) {
       grid.appendChild(note);
     }
 
-    // Select all / deselect all
     document.getElementById('selectAllPages')?.addEventListener('click', () => {
       thumbs.forEach(t => {
         state.selectedPages.add(t.index);
@@ -513,7 +642,6 @@ async function loadPageThumbs(file) {
       grid.querySelectorAll('.page-thumb').forEach(el => el.classList.remove('selected'));
     });
 
-    // Drag-drop reorder
     if (state.tool === 'reorder' && window.Sortable) {
       Sortable.create(grid, {
         animation: 150,
@@ -537,10 +665,7 @@ async function runTool() {
   state.processing = true;
 
   const processBtn = document.getElementById('processBtn');
-  if (processBtn) {
-    processBtn.disabled = true;
-    processBtn.textContent = 'Processing…';
-  }
+  if (processBtn) { processBtn.disabled = true; processBtn.textContent = 'Processing…'; }
   setProgress(true, 5, 'Starting…');
 
   const resultArea = document.getElementById('resultArea');
@@ -565,7 +690,7 @@ async function executeTool(tool) {
   const onProg = (p, t) => setProgress(true, p, t);
   const resultArea = document.getElementById('resultArea');
 
-  /* ---------- PDF tools ---------- */
+  /* ---------- PDF ---------- */
   if (tool === 'merge') {
     const blob = await PDF.mergePDFs(files, onProg);
     downloadBlob(blob, 'merged.pdf');
@@ -584,8 +709,6 @@ async function executeTool(tool) {
     if (!every) {
       const indices = parsePageRanges(rangeStr, total);
       if (!indices.length) throw new Error('Enter valid page ranges (e.g. 1-3, 5)');
-
-      // Collapse contiguous indices into range arrays
       let start = indices[0], prev = indices[0];
       for (let i = 1; i < indices.length; i++) {
         if (indices[i] === prev + 1) { prev = indices[i]; continue; }
@@ -596,9 +719,8 @@ async function executeTool(tool) {
     }
 
     const results = await PDF.splitPDF(files[0], ranges, every);
-    if (results.length === 1) {
-      downloadBlob(results[0], 'split.pdf');
-    } else {
+    if (results.length === 1) downloadBlob(results[0], 'split.pdf');
+    else {
       const zipFiles = results.map((b, i) =>
         new File([b], 'part-' + (i + 1) + '.pdf', { type: 'application/pdf' })
       );
@@ -639,9 +761,7 @@ async function executeTool(tool) {
     const angle = parseInt(document.getElementById('rotateAngle')?.value || '90', 10);
     const scope = document.getElementById('rotateScope')?.value || 'all';
     const indices = scope === 'selected' ? Array.from(state.selectedPages) : null;
-    if (scope === 'selected' && (!indices || !indices.length)) {
-      throw new Error('Select pages or choose All pages');
-    }
+    if (scope === 'selected' && (!indices || !indices.length)) throw new Error('Select pages or choose All pages');
     const blob = await PDF.rotatePages(files[0], angle, indices);
     downloadBlob(blob, 'rotated.pdf');
     showToast('Pages rotated', 'success');
@@ -666,9 +786,7 @@ async function executeTool(tool) {
     const r = parseInt(hex.slice(1, 3), 16) / 255;
     const g = parseInt(hex.slice(3, 5), 16) / 255;
     const b = parseInt(hex.slice(5, 7), 16) / 255;
-    const blob = await PDF.addWatermark(files[0], text, {
-      fontSize, opacity, angle, color: { r, g, b },
-    });
+    const blob = await PDF.addWatermark(files[0], text, { fontSize, opacity, angle, color: { r, g, b } });
     downloadBlob(blob, 'watermarked.pdf');
     showToast('Watermark added', 'success');
     return;
@@ -747,9 +865,8 @@ async function executeTool(tool) {
     const quality = parseFloat(document.getElementById('imgQuality')?.value || '0.92');
     const images = await PDF.pdfToImages(files[0], format, scale, quality, onProg);
     const ext = format === 'jpeg' ? 'jpg' : format;
-    if (images.length === 1) {
-      downloadBlob(images[0], 'page-1.' + ext);
-    } else {
+    if (images.length === 1) downloadBlob(images[0], 'page-1.' + ext);
+    else {
       const zipFiles = images.map((b, i) =>
         new File([b], 'page-' + (i + 1) + '.' + ext, { type: b.type })
       );
@@ -759,14 +876,12 @@ async function executeTool(tool) {
     return;
   }
 
-  /* ---------- Image tools ---------- */
+  /* ---------- Image ---------- */
   if (tool === 'compress-img') {
     const maxSizeMB = parseFloat(document.getElementById('maxSizeMB')?.value || '1');
     const maxWidthOrHeight = parseInt(document.getElementById('maxDim')?.value || '1920', 10);
     const initialQuality = parseFloat(document.getElementById('imgInitQ')?.value || '0.8');
-    const out = await IMG.compressImage(files[0], {
-      maxSizeMB, maxWidthOrHeight, initialQuality,
-    });
+    const out = await IMG.compressImage(files[0], { maxSizeMB, maxWidthOrHeight, initialQuality });
     downloadBlob(out, 'compressed-' + files[0].name);
     showToast(formatBytes(files[0].size) + ' → ' + formatBytes(out.size), 'success');
     return;
@@ -836,29 +951,23 @@ async function executeTool(tool) {
     const opacity = parseFloat(document.getElementById('iwmOpacity')?.value || '0.5');
     const color = document.getElementById('iwmColor')?.value || '#ffffff';
     const position = document.getElementById('iwmPos')?.value || 'center';
-    const out = await IMG.watermarkImage(files[0], text, {
-      fontSize, opacity, color, position,
-    });
+    const out = await IMG.watermarkImage(files[0], text, { fontSize, opacity, color, position });
     downloadBlob(out, 'watermarked-' + files[0].name);
     showToast('Watermark applied', 'success');
     return;
   }
 
-  /* ---------- Utility tools ---------- */
+  /* ---------- Utils ---------- */
   if (tool === 'file-info') {
     const info = await UTIL.getFileInfo(files[0]);
     if (resultArea) {
       resultArea.hidden = false;
       let rows = '';
       Object.keys(info).forEach(k => {
-        rows +=
-          '<tr>' +
-          '<td style="padding:6px 8px;color:var(--text-muted);width:40%">' + k + '</td>' +
-          '<td style="padding:6px 8px;font-weight:500">' + info[k] + '</td>' +
-          '</tr>';
+        rows += '<tr><td style="padding:6px 8px;color:var(--text-muted);width:40%">' + k +
+                '</td><td style="padding:6px 8px;font-weight:500">' + info[k] + '</td></tr>';
       });
-      resultArea.innerHTML =
-        '<h3 style="margin-bottom:12px">File information</h3>' +
+      resultArea.innerHTML = '<h3 style="margin-bottom:12px">File information</h3>' +
         '<table style="width:100%;font-size:0.9rem;border-collapse:collapse">' + rows + '</table>';
     }
     showToast('Info loaded', 'success');
@@ -913,7 +1022,7 @@ async function executeTool(tool) {
         resultArea.innerHTML =
           '<div class="result-meta">Base64 · ' +
           '<button type="button" class="btn btn-secondary btn-sm" id="copyB64">Copy</button></div>' +
-          '<textarea class="text-output" id="b64Out" rows="8" readonly style="width:100%"></textarea>';
+          '<textarea class="text-output" id="b64Out" rows="8" readonly></textarea>';
         document.getElementById('b64Out').value = dataUrl;
         document.getElementById('copyB64')?.addEventListener('click', () => {
           navigator.clipboard.writeText(dataUrl);
