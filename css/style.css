@@ -72,12 +72,6 @@
   --card-shadow:       0 4px 20px rgba(0, 0, 0, 0.3);
   --card-hover-shadow: 0 20px 40px -12px rgba(139, 92, 246, 0.35);
 }
-body{
-  margin: 0;
-  padding: 0;
-  scroll-behavior: smooth;
-  box-sizing: border-box;
-}
 
 /* ============================================
    2. RESET & BASE
@@ -460,17 +454,23 @@ input, textarea, select { font: inherit; color: inherit; }
   border-radius: var(--radius-sm);
   font-size: 1.2rem;
 }
-.service-card .body { min-width: 0; }
+.service-card .body {
+  min-width: 0;
+  display: flex;               /* ✅ FIX: block container */
+  flex-direction: column;      /* ✅ FIX: title upar, desc neeche */
+  gap: 2px;                    /* replaces margin-bottom */
+}
 .service-card .card-title {
   font-size: var(--text-base);
   font-weight: 600;
   color: var(--text-main);
-  margin-bottom: 2px;
+  display: block;              /* ✅ FIX: force block */
 }
 .service-card .card-desc {
   font-size: var(--text-xs);
   color: var(--text-muted);
   line-height: 1.4;
+  display: block;              /* ✅ FIX: force block */
 }
 
 /* ============================================
