@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ZenDoc — Fast, Free, Private Document Processing. 100% client-side." />
+  <meta name="theme-color" content="#6366f1" />
+  <title>ZenDoc — Private Document Tools</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+    integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+
+<body>
+  <div id="app">
+    <!-- Navbar -->
+    <header class="navbar" role="banner">
+      <div class="navbar-inner">
+        <a href="#" class="logo" id="logoBtn" aria-label="ZenDoc Home">
+          <span class="logo-icon" aria-hidden="true">📄</span>
+          <span class="logo-text">ZenDoc</span>
+        </a>
+        <div class="navbar-search">
+          <input type="search" id="toolSearch" placeholder="Search tools..." aria-label="Search tools"
+            autocomplete="off" />
+        </div>
+        <div class="navbar-actions">
+          <button type="button" id="darkModeBtn" class="icon-btn" aria-label="Toggle dark mode" title="Dark mode">
+            <span class="icon-sun">☀️</span>
+            <span class="icon-moon">🌙</span>
+          </button>
+          <a href="https://github.com/Tanishq-kushwaha" class="icon-btn" target="_blank" rel="noopener"
+            aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+        </div>
+        <button type="button" id="sidebarToggle" class="icon-btn sidebar-toggle" aria-label="Toggle menu"
+          aria-expanded="false">☰</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar" role="navigation" aria-label="Tools">
+        <nav class="sidebar-nav">
+          <div class="nav-group">
+            <h3 class="nav-group-title">PDF</h3>
+            <button type="button" class="nav-item active" data-tool="merge">Merge PDFs</button>
+            <button type="button" class="nav-item" data-tool="split">Split PDF</button>
+            <button type="button" class="nav-item" data-tool="compress-pdf">Compress PDF</button>
+            <button type="button" class="nav-item" data-tool="delete-pages">Delete Pages</button>
+            <button type="button" class="nav-item" data-tool="extract-pages">Extract Pages</button>
+            <button type="button" class="nav-item" data-tool="rotate">Rotate Pages</button>
+            <button type="button" class="nav-item" data-tool="reorder">Reorder Pages</button>
+            <button type="button" class="nav-item" data-tool="watermark-pdf">Watermark PDF</button>
+            <button type="button" class="nav-item" data-tool="page-numbers">Page Numbers</button>
+            <button type="button" class="nav-item" data-tool="remove-meta">Remove Metadata</button>
+            <button type="button" class="nav-item" data-tool="protect">Password Protect</button>
+            <button type="button" class="nav-item" data-tool="unlock">Unlock PDF</button>
+            <button type="button" class="nav-item" data-tool="extract-text">Extract Text</button>
+          </div>
+          <div class="nav-group">
+            <h3 class="nav-group-title">Convert</h3>
+            <button type="button" class="nav-item" data-tool="images-to-pdf">Images → PDF</button>
+            <button type="button" class="nav-item" data-tool="pdf-to-images">PDF → Images</button>
+          </div>
+          <div class="nav-group">
+            <h3 class="nav-group-title">Image</h3>
+            <button type="button" class="nav-item" data-tool="compress-img">Compress Image</button>
+            <button type="button" class="nav-item" data-tool="resize">Resize Image</button>
+            <button type="button" class="nav-item" data-tool="convert-img">Convert Format</button>
+            <button type="button" class="nav-item" data-tool="crop">Crop Image</button>
+            <button type="button" class="nav-item" data-tool="rotate-img">Rotate / Flip</button>
+            <button type="button" class="nav-item" data-tool="remove-exif">Remove EXIF</button>
+            <button type="button" class="nav-item" data-tool="watermark-img">Watermark Image</button>
+          </div>
+          <div class="nav-group">
+            <h3 class="nav-group-title">Utils</h3>
+            <button type="button" class="nav-item" data-tool="file-info">File Info</button>
+            <button type="button" class="nav-item" data-tool="blank-pdf">Blank PDF</button>
+            <button type="button" class="nav-item" data-tool="zip">ZIP Files</button>
+            <button type="button" class="nav-item" data-tool="hash">Hash Generator</button>
+            <button type="button" class="nav-item" data-tool="base64">Base64 Converter</button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main -->
+      <main class="main" id="main" role="main">
+        <div class="tool-header">
+          <h1 id="toolTitle">Merge PDFs</h1>
+          <p id="toolDesc" class="tool-desc">Combine multiple PDFs into a single document. Files never leave your
+            browser.</p>
+        </div>
+
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="dropZone" tabindex="0" role="button" aria-label="Upload files">
+          <div class="upload-icon" aria-hidden="true">⬆️</div>
+          <p class="upload-title">Drag & drop files here</p>
+          <p class="upload-subtitle">or</p>
+          <button type="button" class="btn btn-primary" id="chooseFilesBtn">Choose Files</button>
+          <input type="file" id="fileInput" hidden multiple />
+          <p class="upload-hint" id="uploadHint">PDF files · Max 50MB each</p>
+        </div>
+
+        <!-- File List -->
+        <div class="file-list-wrap" id="fileListWrap" hidden>
+          <div class="file-list-header">
+            <span id="fileCount">0 files</span>
+            <button type="button" class="btn btn-ghost btn-sm" id="clearFilesBtn">Clear all</button>
+          </div>
+          <div class="file-list" id="fileList" role="list"></div>
+        </div>
+
+        <!-- Options Panel (tool-specific) -->
+        <div class="options-panel" id="optionsPanel" hidden></div>
+
+        <!-- Progress -->
+        <div class="progress-container" id="progressContainer" hidden>
+          <div class="progress-bar-track">
+            <div class="progress-bar" id="progressBar" style="width:0%"></div>
+          </div>
+          <span class="progress-text" id="progressText">Processing...</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions" id="actionsBar" hidden>
+          <button type="button" class="btn btn-primary btn-lg" id="processBtn" disabled>Process</button>
+          <button type="button" class="btn btn-secondary" id="previewBtn" hidden>Preview</button>
+        </div>
+
+        <!-- Result / Preview area -->
+        <div class="result-area" id="resultArea" hidden></div>
+      </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+      <p>Your files never leave your browser · <span id="appVersion">v1.0.0</span> · <a href="#"
+          id="privacyLink">Privacy</a></p>
+
+      <div class="container text-center">
+        <p class="footer-text">
+          Designed & developed by
+          <span class="developer-name"><a href="https://tanishq-kushwaha.github.io/tanishq-portfolio/">Tanishq
+              Kushwaha</a></span>
+        </p>
+      </div>
+
+    </footer>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 id="modalTitle">Dialog</h2>
+        <button type="button" class="icon-btn" id="modalClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <!-- Privacy modal content template -->
+  <template id="privacyTemplate">
+    <p><strong>100% Client-Side.</strong> All processing happens in your browser. Files are never uploaded to any
+      server.</p>
+    <p>No accounts, no tracking of document content, no third-party analytics on your files.</p>
+    <p>Libraries load from CDN (or local copies). Your documents stay on your device.</p>
+  </template>
+
+  <!-- Libraries from CDN (pdf.js loaded dynamically in app.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
