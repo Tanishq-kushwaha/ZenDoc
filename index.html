@@ -89,51 +89,73 @@
       </aside>
 
       <!-- Main -->
+      <!-- Main Application Area -->
       <main class="main" id="main" role="main">
-        <div class="tool-header">
-          <h1 id="toolTitle">Merge PDFs</h1>
-          <p id="toolDesc" class="tool-desc">Combine multiple PDFs into a single document. Files never leave your
-            browser.</p>
-        </div>
-
-        <!-- Upload Zone -->
-        <div class="upload-zone" id="dropZone" tabindex="0" role="button" aria-label="Upload files">
-          <div class="upload-icon" aria-hidden="true">⬆️</div>
-          <p class="upload-title">Drag & drop files here</p>
-          <p class="upload-subtitle">or</p>
-          <button type="button" class="btn btn-primary" id="chooseFilesBtn">Choose Files</button>
-          <input type="file" id="fileInput" hidden multiple />
-          <p class="upload-hint" id="uploadHint">PDF files · Max 50MB each</p>
-        </div>
-
-        <!-- File List -->
-        <div class="file-list-wrap" id="fileListWrap" hidden>
-          <div class="file-list-header">
-            <span id="fileCount">0 files</span>
-            <button type="button" class="btn btn-ghost btn-sm" id="clearFilesBtn">Clear all</button>
+        
+        <!-- ==========================================
+             1. HOME DASHBOARD (Dynamic Grid View)
+             Ye view mobile aur desktop users ko sabhi 27 features 
+             ek clean grid me dikhayega.
+             ========================================== -->
+        <div id="homeDashboard" class="home-dashboard">
+          <div class="dashboard-header">
+            <h1>What do you want to do today?</h1>
+            <p>Select a tool below. 100% private, processed in your browser.</p>
           </div>
-          <div class="file-list" id="fileList" role="list"></div>
+          <!-- Is div ke andar app.js se dynamically cards ban kar aayenge -->
+          <div class="tool-grid" id="toolGrid"></div>
         </div>
 
-        <!-- Options Panel (tool-specific) -->
-        <div class="options-panel" id="optionsPanel" hidden></div>
-
-        <!-- Progress -->
-        <div class="progress-container" id="progressContainer" hidden>
-          <div class="progress-bar-track">
-            <div class="progress-bar" id="progressBar" style="width:0%"></div>
+        <!-- ==========================================
+             2. TOOL WORKSPACE (File Upload & Options)
+             Jab user dashboard se koi tool chunta hai (jaise Merge), 
+             tab ye hissa show hoga aur dashboard hide ho jayega.
+             ========================================== -->
+        <div id="toolWorkspace" hidden>
+          <div class="tool-header">
+            <h1 id="toolTitle">Merge PDFs</h1>
+            <p id="toolDesc" class="tool-desc">Combine multiple PDFs into a single document. Files never leave your browser.</p>
           </div>
-          <span class="progress-text" id="progressText">Processing...</span>
-        </div>
 
-        <!-- Actions -->
-        <div class="actions" id="actionsBar" hidden>
-          <button type="button" class="btn btn-primary btn-lg" id="processBtn" disabled>Process</button>
-          <button type="button" class="btn btn-secondary" id="previewBtn" hidden>Preview</button>
-        </div>
+          <!-- Upload Zone -->
+          <div class="upload-zone" id="dropZone" tabindex="0" role="button" aria-label="Upload files">
+            <div class="upload-icon" aria-hidden="true">⬆️</div>
+            <p class="upload-title">Drag & drop files here</p>
+            <p class="upload-subtitle">or</p>
+            <button type="button" class="btn btn-primary" id="chooseFilesBtn">Choose Files</button>
+            <input type="file" id="fileInput" hidden multiple />
+            <p class="upload-hint" id="uploadHint">PDF files · Max 50MB each</p>
+          </div>
 
-        <!-- Result / Preview area -->
-        <div class="result-area" id="resultArea" hidden></div>
+          <!-- File List Area -->
+          <div class="file-list-wrap" id="fileListWrap" hidden>
+            <div class="file-list-header">
+              <span id="fileCount">0 files</span>
+              <button type="button" class="btn btn-ghost btn-sm" id="clearFilesBtn">Clear all</button>
+            </div>
+            <div class="file-list" id="fileList" role="list"></div>
+          </div>
+
+          <!-- Tool Options Panel (Jaise compress quality, rotate angle) -->
+          <div class="options-panel" id="optionsPanel" hidden></div>
+
+          <!-- Processing Progress Bar -->
+          <div class="progress-container" id="progressContainer" hidden>
+            <div class="progress-bar-track">
+              <div class="progress-bar" id="progressBar" style="width:0%"></div>
+            </div>
+            <span class="progress-text" id="progressText">Processing...</span>
+          </div>
+
+          <!-- Action Buttons (Process / Preview) -->
+          <div class="actions" id="actionsBar" hidden>
+            <button type="button" class="btn btn-primary btn-lg" id="processBtn" disabled>Process</button>
+            <button type="button" class="btn btn-secondary" id="previewBtn" hidden>Preview</button>
+          </div>
+
+          <!-- Result Area (Download button ya extracted text yaha dikhega) -->
+          <div class="result-area" id="resultArea" hidden></div>
+        </div>
       </main>
     </div>
 
