@@ -33,7 +33,7 @@ export function createObjectURL(blob) {
 }
 
 export function revokeObjectURL(url) {
-  try { URL.revokeObjectURL(url); } catch (_) {}
+  try { URL.revokeObjectURL(url); } catch (_) { }
 }
 
 export function parsePageRanges(str, totalPages) {

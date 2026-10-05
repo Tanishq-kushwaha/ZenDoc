@@ -18,15 +18,19 @@
 ## 27 Tools
 
 ### PDF (13)
+
 Merge · Split · Compress · Delete Pages · Extract Pages · Rotate · Reorder · Watermark · Page Numbers · Remove Metadata · **Password Protect (AES-256)** · Unlock · Extract Text
 
 ### Convert (2)
+
 Images → PDF · PDF → Images
 
 ### Image (7)
+
 Compress · Resize · Convert Format · Crop · Rotate/Flip · Remove EXIF · Watermark
 
 ### Utils (5)
+
 File Info · Blank PDF · ZIP · Hash (SHA-1/256/512) · Base64
 
 ...
