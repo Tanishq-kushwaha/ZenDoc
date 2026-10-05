@@ -323,22 +323,24 @@ export async function tryUnlockPDF(file, password) {
 }
 
 export async function tryProtectPDF(file, userPassword, ownerPassword) {
-  // Stock pdf-lib has no encryption. Document limitation honestly.
-  // We re-save and note the limitation; if pdf-lib-encrypt were present we'd use it.
-  if (window.encryptPDF) {
-    const { PDFDocument } = getPDFLib();
-    const bytes = await file.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(bytes);
-    const encrypted = await window.encryptPDF(pdfDoc, {
-      userPassword,
-      ownerPassword: ownerPassword || userPassword,
-      algorithm: 'AES-256',
-    });
-    return encrypted instanceof Blob ? encrypted : arrayBufferToBlob(encrypted);
-  }
-  showToast('Password encryption requires pdf-lib-encrypt. File re-saved without encryption.', 'warning');
   const { PDFDocument } = getPDFLib();
   const bytes = await file.arrayBuffer();
   const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-  return arrayBufferToBlob(await pdfDoc.save());
+
+  // @cantoo/pdf-lib real encryption API
+  const encryptedBytes = await pdfDoc.encrypt({
+    userPassword: userPassword || ownerPassword || '',
+    ownerPassword: ownerPassword || userPassword || '',
+    permissions: {
+      printing: 'highResolution',
+      modifying: false,
+      copying: false,
+      annotating: false,
+      fillingForms: false,
+      contentAccessibility: true,
+      documentAssembly: false,
+    },
+  });
+
+  return new Blob([encryptedBytes], { type: 'application/pdf' });
 }

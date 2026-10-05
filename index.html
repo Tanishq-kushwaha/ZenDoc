@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,10 +9,11 @@
   <title>ZenDoc — Private Document Tools</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
-        integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -26,7 +28,8 @@
         </a>
 
         <div class="navbar-search">
-          <input type="search" id="toolSearch" placeholder="Search tools..." aria-label="Search tools" autocomplete="off" />
+          <input type="search" id="toolSearch" placeholder="Search tools..." aria-label="Search tools"
+            autocomplete="off" />
         </div>
 
         <div class="navbar-actions">
@@ -34,12 +37,14 @@
             <span class="icon-sun">☀️</span>
             <span class="icon-moon">🌙</span>
           </button>
-          <a href="https://github.com/Tanishq-kushwaha" class="icon-btn" target="_blank" rel="noopener" aria-label="GitHub">
+          <a href="https://github.com/Tanishq-kushwaha" class="icon-btn" target="_blank" rel="noopener"
+            aria-label="GitHub">
             <i class="fa-brands fa-github"></i>
           </a>
         </div>
 
-        <button type="button" id="sidebarToggle" class="icon-btn sidebar-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+        <button type="button" id="sidebarToggle" class="icon-btn sidebar-toggle" aria-label="Toggle menu"
+          aria-expanded="false">☰</button>
       </div>
     </header>
 
@@ -102,14 +107,15 @@
           <!-- Sticky search + category chips -->
           <div class="service-toolbar">
             <div class="search-hero">
-              <input type="search" id="dashboardSearch" placeholder="Search tools (e.g. merge, rotate)..." aria-label="Search tools" autocomplete="off" />
+              <input type="search" id="dashboardSearch" placeholder="Search tools (e.g. merge, rotate)..."
+                aria-label="Search tools" autocomplete="off" />
             </div>
             <div class="chip-row" id="chipRow" role="tablist" aria-label="Tool categories">
-              <button type="button" class="chip is-active" data-cat="all"     aria-pressed="true">All</button>
-              <button type="button" class="chip" data-cat="pdf"     aria-pressed="false">📄 PDF</button>
+              <button type="button" class="chip is-active" data-cat="all" aria-pressed="true">All</button>
+              <button type="button" class="chip" data-cat="pdf" aria-pressed="false">📄 PDF</button>
               <button type="button" class="chip" data-cat="convert" aria-pressed="false">🔄 Convert</button>
-              <button type="button" class="chip" data-cat="image"   aria-pressed="false">🖼️ Image</button>
-              <button type="button" class="chip" data-cat="utils"   aria-pressed="false">🔧 Utils</button>
+              <button type="button" class="chip" data-cat="image" aria-pressed="false">🖼️ Image</button>
+              <button type="button" class="chip" data-cat="utils" aria-pressed="false">🔧 Utils</button>
             </div>
           </div>
 
@@ -203,10 +209,12 @@
 
     <!-- ============ FOOTER ============ -->
     <footer class="footer" role="contentinfo">
-      <p>Your files never leave your browser · <span id="appVersion">v1.0.0</span> · <a href="#" id="privacyLink">Privacy</a></p>
+      <p>Your files never leave your browser · <span id="appVersion">v1.0.0</span> · <a href="#"
+          id="privacyLink">Privacy</a></p>
       <p style="margin-top:8px">
         Designed &amp; developed by
-        <span class="developer-name"><a href="https://tanishq-kushwaha.github.io/tanishq-portfolio/" target="_blank">Tanishq Kushwaha</a></span>
+        <span class="developer-name"><a href="https://tanishq-kushwaha.github.io/tanishq-portfolio/"
+            target="_blank">Tanishq Kushwaha</a></span>
       </p>
     </footer>
   </div>
@@ -234,13 +242,14 @@
   </div>
 
   <template id="privacyTemplate">
-    <p><strong>100% Client-Side.</strong> All processing happens in your browser. Files are never uploaded to any server.</p>
+    <p><strong>100% Client-Side.</strong> All processing happens in your browser. Files are never uploaded to any
+      server.</p>
     <p>No accounts, no tracking of document content, no third-party analytics on your files.</p>
     <p>Libraries load from CDN. Your documents stay on your device.</p>
   </template>
 
   <!-- ============ LIBRARIES ============ -->
-  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
@@ -249,4 +258,5 @@
 
   <script type="module" src="js/app.js"></script>
 </body>
+
 </html>

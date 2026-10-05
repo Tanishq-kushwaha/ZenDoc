@@ -1,14 +1,10 @@
 /**
  * ZenDoc — Main application (100% client-side)
- *
- * Changes vs previous version:
- *   - initDashboard() now populates 4 CATEGORY grids (pdf, convert, image, utils)
- *   - New initDashboardUX() wires: dashboard search, category chips,
- *     collapsible group headers, quick bottom-nav, back-to-tools button.
- *   - Navbar search still filters the sidebar nav-item list.
- *   - All previously nested functions moved to top-level (bug fix).
  */
 
+/* ------------------------------------------------------------------ */
+/* 1. Static imports                                                   */
+/* ------------------------------------------------------------------ */
 import {
   formatBytes, downloadBlob, getAcceptForTool, parsePageRanges, warnLargeFile,
 } from './utils.js';
@@ -19,6 +15,42 @@ import {
 import * as PDF from './tools/pdf-tools.js';
 import * as IMG from './tools/image-tools.js';
 import * as UTIL from './tools/utility-tools.js';
+
+/* ------------------------------------------------------------------ */
+/* 2. Buffer polyfill (needed by @cantoo/pdf-lib)                      */
+/* ------------------------------------------------------------------ */
+try {
+  const { Buffer } = await import('https://cdn.jsdelivr.net/npm/buffer@6.0.3/+esm');
+  window.Buffer = Buffer;
+  globalThis.Buffer = Buffer;
+  window.global = window;
+  if (!window.process) {
+    window.process = { env: {}, browser: true, version: '' };
+  }
+  console.log('[ZenDoc] Buffer polyfill ready');
+} catch (e) {
+  console.error('[ZenDoc] Buffer polyfill failed:', e);
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. Load @cantoo/pdf-lib as UMD script AFTER Buffer is ready         */
+/*    (Using classic script tag injection — more reliable than +esm)   */
+/* ------------------------------------------------------------------ */
+try {
+  await new Promise((resolve, reject) => {
+    if (window.PDFLib) return resolve();
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@cantoo/pdf-lib@2.2.2/dist/pdf-lib.min.js';
+    s.async = false;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('Failed to fetch pdf-lib'));
+    document.head.appendChild(s);
+  });
+  console.log('[ZenDoc] pdf-lib loaded — encrypt:',
+    typeof window.PDFLib?.PDFDocument?.prototype?.encrypt === 'function');
+} catch (e) {
+  console.error('[ZenDoc] pdf-lib load failed:', e);
+}
 
 /* ------------------------------------------------------------------ */
 /* Tool metadata                                                       */
@@ -88,17 +120,32 @@ const state = {
 /* ------------------------------------------------------------------ */
 /* Bootstrap                                                           */
 /* ------------------------------------------------------------------ */
-document.addEventListener('DOMContentLoaded', () => {
+
+// ✅ Safe ready handler — handles both cases:
+//    - DOM already loaded (top-level await delayed us)
+//    - DOM still loading
+function onReady(fn) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fn, { once: true });
+  } else {
+    // Already loaded — run on next tick so UI settles
+    setTimeout(fn, 0);
+  }
+}
+
+onReady(() => {
+  console.log('[ZenDoc] Boot: initializing UI');
   initTheme();
   initNav();
   initUpload();
   initActions();
   initModal();
   initSearch();
-  initDashboard();      // populate category grids
-  initDashboardUX();    // wire chips / search / collapsible / quick-nav
+  initDashboard();
+  initDashboardUX();
   showDashboard();
   setupPdfJs();
+  console.log('[ZenDoc] Boot: complete');
 });
 
 async function setupPdfJs() {
