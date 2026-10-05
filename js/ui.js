@@ -266,25 +266,26 @@ export function buildOptionsHTML(toolId) {
     `,
     'remove-meta': `<p style="font-size:0.9rem;color:var(--text-muted)">Removes title, author, subject, keywords, creator, and producer metadata.</p>`,
     protect: `
-      <h3>Password protection</h3>
-      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px">
-        Note: Full AES encryption requires pdf-lib-encrypt. This demo applies a simple owner-style restriction via metadata when the encrypt package is unavailable; for production use pdf-lib-encrypt.
-      </p>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="userPass">User password (open)</label>
-          <input type="password" id="userPass" autocomplete="new-password" />
-        </div>
-        <div class="form-group">
-          <label for="ownerPass">Owner password</label>
-          <input type="password" id="ownerPass" autocomplete="new-password" />
-        </div>
-      </div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="showPass" />
-        <label for="showPass">Show passwords</label>
-      </div>
-    `,
+  <h3>Password protection</h3>
+  <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px">
+    🔒 Your PDF will be encrypted with AES-256. Enter a user password (to open) 
+    and/or an owner password (for full access). Both are optional but at least one is required.
+  </p>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="userPass">User password (open)</label>
+      <input type="password" id="userPass" autocomplete="new-password" />
+    </div>
+    <div class="form-group">
+      <label for="ownerPass">Owner password</label>
+      <input type="password" id="ownerPass" autocomplete="new-password" />
+    </div>
+  </div>
+  <div class="checkbox-row">
+    <input type="checkbox" id="showPass" />
+    <label for="showPass">Show passwords</label>
+  </div>
+`,
     unlock: `
       <h3>Unlock PDF</h3>
       <div class="form-row">

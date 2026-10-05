@@ -2,7 +2,7 @@
   "name": "ZenDoc",
   "short_name": "ZenDoc",
   "description": "Fast, Free, Private Document Processing — 100% client-side",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#6366f1",
