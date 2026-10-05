@@ -181,15 +181,19 @@ function initNav() {
     btn.addEventListener('click', () => {
       const tool = btn.dataset.tool;
       if (tool) switchTool(tool);
+      // ✅ Close sidebar AND unlock body scroll
       document.getElementById('sidebar')?.classList.remove('open');
+      document.body.classList.remove('sidebar-open');
       document.getElementById('sidebarToggle')?.setAttribute('aria-expanded', 'false');
     });
   });
 
   document.getElementById('sidebarToggle')?.addEventListener('click', () => {
     const sb = document.getElementById('sidebar');
-    const open = sb?.classList.toggle('open');
-    document.getElementById('sidebarToggle')?.setAttribute('aria-expanded', String(!!open));
+    const isOpen = sb?.classList.toggle('open');
+    // ✅ Lock/unlock body scroll together
+    document.body.classList.toggle('sidebar-open', !!isOpen);
+    document.getElementById('sidebarToggle')?.setAttribute('aria-expanded', String(!!isOpen));
   });
 
   document.getElementById('logoBtn')?.addEventListener('click', (e) => {

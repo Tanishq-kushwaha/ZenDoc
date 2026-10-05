@@ -919,13 +919,25 @@ textarea.text-output { width: 100%; border: 1px solid var(--border); resize: ver
     background: var(--bg-section);
     border-right: 1px solid var(--border);
     position: fixed;
-    top: 61px; bottom: 0; left: 0;
+    top: 61px;
+    bottom: 0;
+    left: 0;
     width: min(80vw, 300px);
-    height: auto;
+
+    /* ✅ Explicit height + scroll enabled */
+    height: calc(100dvh - 61px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;   /* iOS smooth scroll */
+    overscroll-behavior: contain;        /* prevent scroll chaining */
+
     transform: translateX(-105%);
     transition: transform var(--t-slow);
     z-index: var(--z-nav);
     box-shadow: 6px 0 24px rgba(0,0,0,0.15);
+  }
+   body.sidebar-open {
+    overflow: hidden;
+    touch-action: none;
   }
   .sidebar.open { transform: translateX(0); }
 
