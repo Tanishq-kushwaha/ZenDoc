@@ -17,13 +17,28 @@ import * as IMG from './tools/image-tools.js';
 import * as UTIL from './tools/utility-tools.js';
 
 /* ------------------------------------------------------------------ */
-/* 2. Buffer polyfill (needed by @cantoo/pdf-lib)                      */
+/* 2. Buffer polyfill (self-contained UMD bundle from bundle.run)      */
 /* ------------------------------------------------------------------ */
 try {
-  const { Buffer } = await import('./lib/buffer.mjs');  
-  window.Buffer = Buffer;
-  globalThis.Buffer = Buffer;
+  // Load buffer.min.js as classic script (UMD sets window.buffer)
+  await new Promise((resolve, reject) => {
+    if (window.Buffer) return resolve();
+    const s = document.createElement('script');
+    s.src = './js/lib/buffer.min.js';
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('buffer.min.js failed to load'));
+    document.head.appendChild(s);
+  });
+
+  // bundle.run exposes module as `window.buffer` (lowercase namespace)
+  // Extract the actual Buffer class to global
+  if (!window.Buffer && window.buffer && window.buffer.Buffer) {
+    window.Buffer = window.buffer.Buffer;
+  }
+
+  // Ensure Node-style globals exist (some libs check these)
   window.global = window;
+  globalThis.Buffer = window.Buffer;
   if (!window.process) {
     window.process = { env: {}, browser: true, version: '' };
   }
