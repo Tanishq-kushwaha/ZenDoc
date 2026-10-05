@@ -327,8 +327,9 @@ export async function tryProtectPDF(file, userPassword, ownerPassword) {
   const bytes = await file.arrayBuffer();
   const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
 
-  // @cantoo/pdf-lib real encryption API
-  const encryptedBytes = await pdfDoc.encrypt({
+  // ✅ @cantoo/pdf-lib: encrypt() mutates the document in-place
+  //    (does NOT return bytes)
+  pdfDoc.encrypt({
     userPassword: userPassword || ownerPassword || '',
     ownerPassword: ownerPassword || userPassword || '',
     permissions: {
@@ -342,5 +343,7 @@ export async function tryProtectPDF(file, userPassword, ownerPassword) {
     },
   });
 
+  // ✅ save() AFTER encrypt() gives the encrypted bytes
+  const encryptedBytes = await pdfDoc.save();
   return new Blob([encryptedBytes], { type: 'application/pdf' });
 }
