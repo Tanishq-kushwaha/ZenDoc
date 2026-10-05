@@ -14,10 +14,9 @@ async function loadPdfJs() {
   if (window.pdfjsLib) return window.pdfjsLib;
   // dynamic import fallback
   try {
-    const mod = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.min.mjs');
+    const mod = await import('../lib/pdf.min.mjs');
     window.pdfjsLib = mod;
-    mod.GlobalWorkerOptions.workerSrc =
-      'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs';
+    mod.GlobalWorkerOptions.workerSrc = './js/lib/pdf.worker.min.mjs';
     return mod;
   } catch (e) {
     throw new Error('pdf.js failed to load: ' + e.message);

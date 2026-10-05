@@ -17,10 +17,9 @@ export async function getFileInfo(file) {
     try {
       let pdfjs = window.pdfjsLib;
       if (!pdfjs) {
-        const mod = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.min.mjs');
+        const mod = await import('../lib/pdf.min.mjs');
         pdfjs = mod;
-        mod.GlobalWorkerOptions.workerSrc =
-          'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs';
+        mod.GlobalWorkerOptions.workerSrc = './js/lib/pdf.worker.min.mjs';
       }
       const data = new Uint8Array(await file.arrayBuffer());
       const pdf = await pdfjs.getDocument({ data }).promise;
