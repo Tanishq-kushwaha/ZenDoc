@@ -20,14 +20,13 @@ import * as UTIL from './tools/utility-tools.js';
 /* 2. Buffer polyfill (needed by @cantoo/pdf-lib)                      */
 /* ------------------------------------------------------------------ */
 try {
-  const { Buffer } = await import('https://cdn.jsdelivr.net/npm/buffer@6.0.3/+esm');
+  const { Buffer } = await import('./lib/buffer.mjs');  
   window.Buffer = Buffer;
   globalThis.Buffer = Buffer;
   window.global = window;
   if (!window.process) {
     window.process = { env: {}, browser: true, version: '' };
   }
-  console.log('[ZenDoc] Buffer polyfill ready');
 } catch (e) {
   console.error('[ZenDoc] Buffer polyfill failed:', e);
 }
@@ -40,14 +39,12 @@ try {
   await new Promise((resolve, reject) => {
     if (window.PDFLib) return resolve();
     const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/@cantoo/pdf-lib@2.2.2/dist/pdf-lib.min.js';
+    s.src = './js/lib/pdf-lib.min.js';
     s.async = false;
     s.onload = () => resolve();
     s.onerror = () => reject(new Error('Failed to fetch pdf-lib'));
     document.head.appendChild(s);
   });
-  console.log('[ZenDoc] pdf-lib loaded — encrypt:',
-    typeof window.PDFLib?.PDFDocument?.prototype?.encrypt === 'function');
 } catch (e) {
   console.error('[ZenDoc] pdf-lib load failed:', e);
 }
@@ -134,7 +131,6 @@ function onReady(fn) {
 }
 
 onReady(() => {
-  console.log('[ZenDoc] Boot: initializing UI');
   initTheme();
   initNav();
   initUpload();
@@ -145,15 +141,13 @@ onReady(() => {
   initDashboardUX();
   showDashboard();
   setupPdfJs();
-  console.log('[ZenDoc] Boot: complete');
 });
 
 async function setupPdfJs() {
   try {
-    const mod = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.min.mjs');
+    const mod = await import('./lib/pdf.min.mjs');
     window.pdfjsLib = mod;
-    mod.GlobalWorkerOptions.workerSrc =
-      'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs';
+    mod.GlobalWorkerOptions.workerSrc = './js/lib/pdf.worker.min.mjs';
   } catch (e) {
     console.warn('pdf.js preload failed', e);
   }
