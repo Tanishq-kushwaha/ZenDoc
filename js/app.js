@@ -188,6 +188,18 @@ function initNav() {
     });
   });
 
+  document.addEventListener('click', (e) => {
+    const sb = document.getElementById('sidebar');
+    const toggle = document.getElementById('sidebarToggle');
+    if (!sb || !sb.classList.contains('open')) return;
+    if (sb.contains(e.target)) return;        // click inside sidebar → ignore
+    if (toggle?.contains(e.target)) return;   // click on toggle → ignore
+    // Click outside → close
+    sb.classList.remove('open');
+    document.body.classList.remove('sidebar-open');
+    toggle?.setAttribute('aria-expanded', 'false');
+  });
+
   document.getElementById('sidebarToggle')?.addEventListener('click', () => {
     const sb = document.getElementById('sidebar');
     const isOpen = sb?.classList.toggle('open');
@@ -278,10 +290,10 @@ function initActions() {
 /* ------------------------------------------------------------------ */
 function initDashboard() {
   const grids = {
-    pdf:     document.getElementById('grid-pdf'),
+    pdf: document.getElementById('grid-pdf'),
     convert: document.getElementById('grid-convert'),
-    image:   document.getElementById('grid-image'),
-    utils:   document.getElementById('grid-utils'),
+    image: document.getElementById('grid-image'),
+    utils: document.getElementById('grid-utils'),
   };
 
   // Bail if structure missing
@@ -298,7 +310,7 @@ function initDashboard() {
 
     const icon = meta.accept === 'pdf' ? '📄'
       : meta.accept === 'image' ? '🖼️'
-      : '🔧';
+        : '🔧';
 
     const card = document.createElement('button');
     card.type = 'button';
@@ -309,8 +321,8 @@ function initDashboard() {
     card.innerHTML =
       '<span class="card-icon" aria-hidden="true">' + icon + '</span>' +
       '<span class="body">' +
-        '<span class="card-title">' + meta.title + '</span>' +
-        '<span class="card-desc">' + meta.desc + '</span>' +
+      '<span class="card-title">' + meta.title + '</span>' +
+      '<span class="card-desc">' + meta.desc + '</span>' +
       '</span>';
 
     card.addEventListener('click', () => switchTool(key));
@@ -1016,7 +1028,7 @@ async function executeTool(tool) {
       let rows = '';
       Object.keys(info).forEach(k => {
         rows += '<tr><td style="padding:6px 8px;color:var(--text-muted);width:40%">' + k +
-                '</td><td style="padding:6px 8px;font-weight:500">' + info[k] + '</td></tr>';
+          '</td><td style="padding:6px 8px;font-weight:500">' + info[k] + '</td></tr>';
       });
       resultArea.innerHTML = '<h3 style="margin-bottom:12px">File information</h3>' +
         '<table style="width:100%;font-size:0.9rem;border-collapse:collapse">' + rows + '</table>';
