@@ -113,18 +113,8 @@ onReady(() => {
   initDashboard();
   initDashboardUX();
   showDashboard();
-  setupPdfJs();
 });
 
-async function setupPdfJs() {
-  try {
-    const mod = await import('./lib/pdf.min.mjs');
-    window.pdfjsLib = mod;
-    mod.GlobalWorkerOptions.workerSrc = './js/lib/pdf.worker.min.mjs';
-  } catch (e) {
-    console.warn('pdf.js preload failed', e);
-  }
-}
 
 /* ------------------------------------------------------------------ */
 /* Theme                                                               */
