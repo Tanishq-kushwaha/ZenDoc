@@ -4,6 +4,53 @@ import {
 } from '../utils.js';
 import { setProgress, showToast } from '../ui.js';
 
+
+/* ------------------------------------------------------------------ */
+/* Lazy loader for Buffer + pdf-lib                                    */
+/* Loads only when a PDF tool is used — saves ~370 KB on initial load */
+/* ------------------------------------------------------------------ */
+let _pdfLibPromise = null;
+
+export function ensurePDFLibLoaded() {
+  if (window.PDFLib) return Promise.resolve();
+  if (_pdfLibPromise) return _pdfLibPromise;
+
+  _pdfLibPromise = (async () => {
+    // Step 1 — Buffer polyfill
+    if (!window.Buffer) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = './js/lib/buffer.min.js';
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('buffer.min.js failed to load'));
+        document.head.appendChild(s);
+      });
+      if (!window.Buffer && window.buffer?.Buffer) {
+        window.Buffer = window.buffer.Buffer;
+      }
+      window.global = window;
+      globalThis.Buffer = window.Buffer;
+      if (!window.process) {
+        window.process = { env: {}, browser: true, version: '' };
+      }
+    }
+
+    // Step 2 — pdf-lib (needs Buffer ready)
+    if (!window.PDFLib) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = './js/lib/pdf-lib.min.js';
+        s.async = false;
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('pdf-lib failed to load'));
+        document.head.appendChild(s);
+      });
+    }
+  })();
+
+  return _pdfLibPromise;
+}
+
 function getPDFLib() {
   const lib = window.PDFLib;
   if (!lib) throw new Error('pdf-lib not loaded');

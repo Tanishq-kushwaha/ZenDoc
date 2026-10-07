@@ -120,9 +120,6 @@
   <!-- ============ FONTS & STYLES ============ -->
   <link rel="stylesheet" href="css/style.css" />
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
-    integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -221,58 +218,56 @@
               <input type="search" id="dashboardSearch" placeholder="Search tools (e.g. merge, rotate)..."
                 aria-label="Search tools" autocomplete="off" />
             </div>
-            <div class="chip-row" id="chipRow" role="tablist" aria-label="Tool categories">
+            <div class="chip-row" id="chipRow" aria-label="Tool categories">
               <button type="button" class="chip is-active" data-cat="all" aria-pressed="true">All</button>
               <button type="button" class="chip" data-cat="pdf" aria-pressed="false">📄 PDF</button>
               <button type="button" class="chip" data-cat="convert" aria-pressed="false">🔄 Convert</button>
               <button type="button" class="chip" data-cat="image" aria-pressed="false">🖼️ Image</button>
               <button type="button" class="chip" data-cat="utils" aria-pressed="false">🔧 Utils</button>
             </div>
-          </div>
+            <!-- Group: PDF -->
+            <section class="service-group" data-cat="pdf" data-open="true">
+              <button type="button" class="service-group-header" aria-expanded="true">
+                <span>📄 PDF Tools</span>
+                <span class="count-pill">13</span>
+                <span class="caret" aria-hidden="true">▾</span>
+              </button>
+              <div class="service-grid" id="grid-pdf"></div>
+            </section>
 
-          <!-- Group: PDF -->
-          <section class="service-group" data-cat="pdf" data-open="true">
-            <button type="button" class="service-group-header" aria-expanded="true">
-              <span>📄 PDF Tools</span>
-              <span class="count-pill">13</span>
-              <span class="caret" aria-hidden="true">▾</span>
-            </button>
-            <div class="service-grid" id="grid-pdf"></div>
-          </section>
+            <!-- Group: Convert -->
+            <section class="service-group" data-cat="convert" data-open="true">
+              <button type="button" class="service-group-header" aria-expanded="true">
+                <span>🔄 Convert</span>
+                <span class="count-pill">2</span>
+                <span class="caret" aria-hidden="true">▾</span>
+              </button>
+              <div class="service-grid" id="grid-convert"></div>
+            </section>
 
-          <!-- Group: Convert -->
-          <section class="service-group" data-cat="convert" data-open="true">
-            <button type="button" class="service-group-header" aria-expanded="true">
-              <span>🔄 Convert</span>
-              <span class="count-pill">2</span>
-              <span class="caret" aria-hidden="true">▾</span>
-            </button>
-            <div class="service-grid" id="grid-convert"></div>
-          </section>
+            <!-- Group: Image -->
+            <section class="service-group" data-cat="image" data-open="true">
+              <button type="button" class="service-group-header" aria-expanded="true">
+                <span>🖼️ Image Tools</span>
+                <span class="count-pill">7</span>
+                <span class="caret" aria-hidden="true">▾</span>
+              </button>
+              <div class="service-grid" id="grid-image"></div>
+            </section>
 
-          <!-- Group: Image -->
-          <section class="service-group" data-cat="image" data-open="true">
-            <button type="button" class="service-group-header" aria-expanded="true">
-              <span>🖼️ Image Tools</span>
-              <span class="count-pill">7</span>
-              <span class="caret" aria-hidden="true">▾</span>
-            </button>
-            <div class="service-grid" id="grid-image"></div>
-          </section>
+            <!-- Group: Utils -->
+            <section class="service-group" data-cat="utils" data-open="true">
+              <button type="button" class="service-group-header" aria-expanded="true">
+                <span>🔧 Utilities</span>
+                <span class="count-pill">5</span>
+                <span class="caret" aria-hidden="true">▾</span>
+              </button>
+              <div class="service-grid" id="grid-utils"></div>
+            </section>
 
-          <!-- Group: Utils -->
-          <section class="service-group" data-cat="utils" data-open="true">
-            <button type="button" class="service-group-header" aria-expanded="true">
-              <span>🔧 Utilities</span>
-              <span class="count-pill">5</span>
-              <span class="caret" aria-hidden="true">▾</span>
-            </button>
-            <div class="service-grid" id="grid-utils"></div>
-          </section>
-
-          <p id="noResults" hidden style="text-align:center;padding:40px 20px;color:var(--text-muted)">
-            No tools match your search.
-          </p>
+            <p id="noResults" hidden style="text-align:center;padding:40px 20px;color:var(--text-muted)">
+              No tools match your search.
+            </p>
         </section>
 
         <!-- ============ TOOL WORKSPACE ============ -->
