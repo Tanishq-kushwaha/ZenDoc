@@ -46,8 +46,18 @@ export async function getFileInfo(file) {
 }
 
 export async function createZip(files, zipName = 'zendoc-output.zip') {
-  if (!window.JSZip) throw new Error('JSZip not loaded');
-  const zip = new JSZip();
+  // ✅ Lazy load JSZip if not already loaded
+  if (!window.JSZip) {
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = './js/lib/jszip.min.js';
+      s.onload = resolve;
+      s.onerror = () => reject(new Error('JSZip failed to load'));
+      document.head.appendChild(s);
+    });
+  }
+
+  const zip = new window.JSZip();
   for (const file of files) {
     zip.file(file.name || 'file', file);
   }

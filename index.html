@@ -225,49 +225,50 @@
               <button type="button" class="chip" data-cat="image" aria-pressed="false">🖼️ Image</button>
               <button type="button" class="chip" data-cat="utils" aria-pressed="false">🔧 Utils</button>
             </div>
-            <!-- Group: PDF -->
-            <section class="service-group" data-cat="pdf" data-open="true">
-              <button type="button" class="service-group-header" aria-expanded="true">
-                <span>📄 PDF Tools</span>
-                <span class="count-pill">13</span>
-                <span class="caret" aria-hidden="true">▾</span>
-              </button>
-              <div class="service-grid" id="grid-pdf"></div>
-            </section>
+          </div>
+          <!-- Group: PDF -->
+          <section class="service-group" data-cat="pdf" data-open="true">
+            <button type="button" class="service-group-header" aria-expanded="true">
+              <span>📄 PDF Tools</span>
+              <span class="count-pill">13</span>
+              <span class="caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="service-grid" id="grid-pdf"></div>
+          </section>
 
-            <!-- Group: Convert -->
-            <section class="service-group" data-cat="convert" data-open="true">
-              <button type="button" class="service-group-header" aria-expanded="true">
-                <span>🔄 Convert</span>
-                <span class="count-pill">2</span>
-                <span class="caret" aria-hidden="true">▾</span>
-              </button>
-              <div class="service-grid" id="grid-convert"></div>
-            </section>
+          <!-- Group: Convert -->
+          <section class="service-group" data-cat="convert" data-open="true">
+            <button type="button" class="service-group-header" aria-expanded="true">
+              <span>🔄 Convert</span>
+              <span class="count-pill">2</span>
+              <span class="caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="service-grid" id="grid-convert"></div>
+          </section>
 
-            <!-- Group: Image -->
-            <section class="service-group" data-cat="image" data-open="true">
-              <button type="button" class="service-group-header" aria-expanded="true">
-                <span>🖼️ Image Tools</span>
-                <span class="count-pill">7</span>
-                <span class="caret" aria-hidden="true">▾</span>
-              </button>
-              <div class="service-grid" id="grid-image"></div>
-            </section>
+          <!-- Group: Image -->
+          <section class="service-group" data-cat="image" data-open="true">
+            <button type="button" class="service-group-header" aria-expanded="true">
+              <span>🖼️ Image Tools</span>
+              <span class="count-pill">7</span>
+              <span class="caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="service-grid" id="grid-image"></div>
+          </section>
 
-            <!-- Group: Utils -->
-            <section class="service-group" data-cat="utils" data-open="true">
-              <button type="button" class="service-group-header" aria-expanded="true">
-                <span>🔧 Utilities</span>
-                <span class="count-pill">5</span>
-                <span class="caret" aria-hidden="true">▾</span>
-              </button>
-              <div class="service-grid" id="grid-utils"></div>
-            </section>
+          <!-- Group: Utils -->
+          <section class="service-group" data-cat="utils" data-open="true">
+            <button type="button" class="service-group-header" aria-expanded="true">
+              <span>🔧 Utilities</span>
+              <span class="count-pill">5</span>
+              <span class="caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="service-grid" id="grid-utils"></div>
+          </section>
 
-            <p id="noResults" hidden style="text-align:center;padding:40px 20px;color:var(--text-muted)">
-              No tools match your search.
-            </p>
+          <p id="noResults" hidden style="text-align:center;padding:40px 20px;color:var(--text-muted)">
+            No tools match your search.
+          </p>
         </section>
 
         <!-- ============ TOOL WORKSPACE ============ -->
@@ -355,9 +356,9 @@
   </template>
 
   <!-- ============ LIBRARIES (local — offline-capable) ============ -->
-  <script defer src="js/lib/jspdf.umd.min.js"></script>
+  <!-- <script defer src="js/lib/jspdf.umd.min.js"></script> -->
   <script defer src="js/lib/image-compress.js"></script>
-  <script defer src="js/lib/jszip.min.js"></script>
+  <!-- <script defer src="js/lib/jszip.min.js"></script> -->
   <script defer src="js/lib/FileSaver.min.js"></script>
   <script defer src="js/lib/Sortable.min.js"></script>
 

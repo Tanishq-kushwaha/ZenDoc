@@ -104,40 +104,50 @@ export async function splitPDF(file, ranges, everyPage = false) {
 }
 
 export async function compressPDF(file, quality = 0.7, scale = 1.5, onProgress) {
-  const pdfjs = await loadPdfJs();
-  const data = new Uint8Array(await file.arrayBuffer());
-  const pdf = await pdfjs.getDocument({ data }).promise;
-  const { jsPDF } = window.jspdf || window;
-  if (!jsPDF) throw new Error('jsPDF not loaded');
-
-  let outputPdf = null;
-  for (let i = 1; i <= pdf.numPages; i++) {
-    onProgress?.((i / pdf.numPages) * 100, `Compressing page ${i}/${pdf.numPages}...`);
-    const page = await pdf.getPage(i);
-    const viewport = page.getViewport({ scale });
-    const canvas = document.createElement('canvas');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-    const imgData = canvas.toDataURL('image/jpeg', quality);
-    const w = viewport.width;
-    const h = viewport.height;
-    // Use mm roughly based on 72dpi pts
-    const mmW = (w / scale) * 0.352778;
-    const mmH = (h / scale) * 0.352778;
-    if (i === 1) {
-      outputPdf = new jsPDF({
-        orientation: mmW > mmH ? 'l' : 'p',
-        unit: 'mm',
-        format: [mmW, mmH],
-      });
-    } else {
-      outputPdf.addPage([mmW, mmH], mmW > mmH ? 'l' : 'p');
-    }
-    outputPdf.addImage(imgData, 'JPEG', 0, 0, mmW, mmH);
-    canvas.width = 0; canvas.height = 0;
+  // ✅ Lazy load jsPDF if not already loaded
+  if (!window.jspdf?.jsPDF) {
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = './js/lib/jspdf.umd.min.js';
+      s.onload = resolve;
+      s.onerror = () => reject(new Error('jsPDF failed to load'));
+      document.head.appendChild(s);
+    });
   }
-  return outputPdf.output('blob');
+const pdfjs = await loadPdfJs();
+const data = new Uint8Array(await file.arrayBuffer());
+const pdf = await pdfjs.getDocument({ data }).promise;
+const { jsPDF } = window.jspdf || window;
+if (!jsPDF) throw new Error('jsPDF not loaded');
+
+let outputPdf = null;
+for (let i = 1; i <= pdf.numPages; i++) {
+  onProgress?.((i / pdf.numPages) * 100, `Compressing page ${i}/${pdf.numPages}...`);
+  const page = await pdf.getPage(i);
+  const viewport = page.getViewport({ scale });
+  const canvas = document.createElement('canvas');
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+  const imgData = canvas.toDataURL('image/jpeg', quality);
+  const w = viewport.width;
+  const h = viewport.height;
+  // Use mm roughly based on 72dpi pts
+  const mmW = (w / scale) * 0.352778;
+  const mmH = (h / scale) * 0.352778;
+  if (i === 1) {
+    outputPdf = new jsPDF({
+      orientation: mmW > mmH ? 'l' : 'p',
+      unit: 'mm',
+      format: [mmW, mmH],
+    });
+  } else {
+    outputPdf.addPage([mmW, mmH], mmW > mmH ? 'l' : 'p');
+  }
+  outputPdf.addImage(imgData, 'JPEG', 0, 0, mmW, mmH);
+  canvas.width = 0; canvas.height = 0;
+}
+return outputPdf.output('blob');
 }
 
 export async function deletePages(file, pagesToDelete) {
