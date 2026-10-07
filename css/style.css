@@ -424,6 +424,18 @@ input, textarea, select { font: inherit; color: inherit; }
   grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
   gap: var(--space-3);
   padding-top: var(--space-4);
+  /* ✅ CLS fix: reserve space for cards */
+  min-height: 320px;
+  content-visibility: auto;
+  contain-intrinsic-size: 320px;
+}
+
+/* Mobile — fewer columns, taller */
+@media (max-width: 768px) {
+  .service-grid {
+    min-height: 400px;
+    contain-intrinsic-size: 400px;
+  }
 }
 
 .service-card {
