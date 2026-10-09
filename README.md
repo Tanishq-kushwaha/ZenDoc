@@ -16,7 +16,11 @@
 ## 🏗️ Architecture
 
 <p align="center">
-  <img src="assets/architecture.png" alt="ZenDoc Architecture Diagram" width="800" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/architecture-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/architecture.png">
+    <img src="assets/architecture.png" alt="ZenDoc Architecture Diagram" width="800" />
+  </picture>
 </p>
 
 
