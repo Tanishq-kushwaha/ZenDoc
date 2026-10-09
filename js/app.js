@@ -684,17 +684,7 @@ async function loadPageThumbs(file) {
       grid.appendChild(note);
     }
 
-    document.getElementById('selectAllPages')?.addEventListener('click', () => {
-      thumbs.forEach(t => {
-        state.selectedPages.add(t.index);
-        grid.querySelector('[data-index="' + t.index + '"]')?.classList.add('selected');
-      });
-    });
-    document.getElementById('deselectAllPages')?.addEventListener('click', () => {
-      state.selectedPages.clear();
-      grid.querySelectorAll('.page-thumb').forEach(el => el.classList.remove('selected'));
-    });
-
+  
     if (state.tool === 'reorder' && window.Sortable) {
       Sortable.create(grid, {
         animation: 150,
