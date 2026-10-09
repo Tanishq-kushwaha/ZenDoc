@@ -11,6 +11,7 @@
 
 **Live app:** [https://tanishq-kushwaha.github.io/ZenDoc/](https://tanishq-kushwaha.github.io/ZenDoc/)
 
+
 ---
 
 ## Why ZenDoc?
@@ -102,6 +103,9 @@ After the first visit, ZenDoc can work **offline** (service worker / PWA).
 
 No backend. No analytics. No tracking scripts.
 
+
+---
+[![Architecture diagram of tanishq-kushwaha/zendoc](https://gitdiagram.com/tanishq-kushwaha/zendoc/diagram.png)](https://gitdiagram.com/tanishq-kushwaha/zendoc?utm_source=readme&utm_medium=picture)
 ---
 
 ## Project structure
