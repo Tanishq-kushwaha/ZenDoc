@@ -336,6 +336,9 @@ export async function pdfToImages(file, format = 'png', scale = 2, quality = 0.9
     canvas.height = viewport.height;
     await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
     const blob = await new Promise(r => canvas.toBlob(r, mime, quality));
+    if (!blob) {
+      throw new Error(`Failed to render page ${i} — canvas too large or tainted. Try a smaller scale.`);
+    }
     images.push(blob);
     canvas.width = 0; canvas.height = 0;
   }
