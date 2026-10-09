@@ -691,14 +691,32 @@ async function loadPageThumbs(file) {
     }
 
 
-    if (state.tool === 'reorder' && window.Sortable) {
-      Sortable.create(grid, {
-        animation: 150,
-        onEnd: () => {
-          state.pageOrder = Array.from(grid.querySelectorAll('.page-thumb'))
-            .map(el => +el.dataset.index);
-        },
-      });
+    if (state.tool === 'reorder') {
+      if (window.Sortable) {
+        // ✅ Sortable loaded — enable drag-drop
+        Sortable.create(grid, {
+          animation: 150,
+          onEnd: () => {
+            state.pageOrder = Array.from(grid.querySelectorAll('.page-thumb'))
+              .map(el => +el.dataset.index);
+          },
+        });
+      } else {
+        // ⚠️ Sortable failed to load — show warning + disable Process
+        showToast(
+          'Drag-drop unavailable — Sortable library failed to load. Please refresh the page.',
+          'warning'
+        );
+        const processBtn = document.getElementById('processBtn');
+        if (processBtn) processBtn.disabled = true;
+
+        // Optional: add a small inline note in the grid
+        const note = document.createElement('p');
+        note.style.cssText =
+          'grid-column:1/-1;font-size:0.85rem;color:var(--warning);text-align:center;padding:8px';
+        note.textContent = '⚠️ Reorder unavailable — Sortable library not loaded.';
+        grid.appendChild(note);
+      }
     }
   } catch (e) {
     handleError(e);
