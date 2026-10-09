@@ -7,6 +7,7 @@
 [![Offline](https://img.shields.io/badge/offline-ready-brightgreen)](#)
 [![Client-Side](https://img.shields.io/badge/100%25-client--side-purple)](#)
 [![PWA](https://img.shields.io/badge/PWA-installable-orange)](#)
+[![Architecture diagram](https://gitdiagram.com/diagram-badge.svg)](https://gitdiagram.com/tanishq-kushwaha/zendoc?utm_source=readme&utm_medium=badge)
 
 **Live app:** [https://tanishq-kushwaha.github.io/ZenDoc/](https://tanishq-kushwaha.github.io/ZenDoc/)
 
