@@ -606,11 +606,26 @@ async function loadPageThumbs(file) {
   grid.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">Loading pages…</p>';
 
   try {
-    const result = await PDF.renderPageThumbnails(file, 80);
+    // ✅ Reorder/delete/extract need ALL pages visible — reorder is visual
+    //    For reorder, use a higher cap so user can actually manipulate every page
+    const isReorder = state.tool === 'reorder';
+    const cap = isReorder ? 1000 : 80;
+
+    const result = await PDF.renderPageThumbnails(file, cap);
     const thumbs = result.thumbs;
     const totalPages = result.totalPages;
 
-    state.pageOrder = thumbs.map(t => t.index);
+    // If cap still truncated (unlikely for reorder with 1000 cap),
+    // extend pageOrder to include remaining pages.
+    if (totalPages > thumbs.length) {
+      const visibleIndices = thumbs.map(t => t.index);
+      const remaining = Array.from({ length: totalPages }, (_, i) => i)
+        .filter(i => !visibleIndices.includes(i));
+      state.pageOrder = [...visibleIndices, ...remaining];
+    } else {
+      state.pageOrder = thumbs.map(t => t.index);
+    }
+
     state.selectedPages.clear();
     grid.innerHTML = '';
 
