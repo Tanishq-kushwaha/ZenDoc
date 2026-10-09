@@ -36,7 +36,13 @@ const TOOL_META = {
   'watermark-pdf': { title: 'Watermark PDF', desc: 'Add a text watermark to every page.', multi: false, minFiles: 1, accept: 'pdf' },
   'page-numbers': { title: 'Page Numbers', desc: 'Add page numbers to your PDF.', multi: false, minFiles: 1, accept: 'pdf' },
   'remove-meta': { title: 'Remove Metadata', desc: 'Strip author, title, and other PDF metadata.', multi: false, minFiles: 1, accept: 'pdf' },
-  protect: { title: 'Password Protect', desc: 'Lock a PDF with a password (full AES needs pdf-lib-encrypt).', multi: false, minFiles: 1, accept: 'pdf' },
+  protect: {
+    title: 'Password Protect',
+    desc: 'Encrypt a PDF with AES-256 user + owner passwords.',
+    multi: false,
+    minFiles: 1,
+    accept: 'pdf'
+  },
   unlock: { title: 'Unlock PDF', desc: 'Decrypt a password-protected PDF when you know the password.', multi: false, minFiles: 1, accept: 'pdf' },
   'extract-text': { title: 'Extract Text', desc: 'Pull text content from the PDF text layer.', multi: false, minFiles: 1, accept: 'pdf' },
   'images-to-pdf': { title: 'Images → PDF', desc: 'Combine images into a single PDF.', multi: true, minFiles: 1, accept: 'image' },
@@ -684,7 +690,7 @@ async function loadPageThumbs(file) {
       grid.appendChild(note);
     }
 
-  
+
     if (state.tool === 'reorder' && window.Sortable) {
       Sortable.create(grid, {
         animation: 150,
