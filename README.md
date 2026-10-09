@@ -11,6 +11,26 @@
 
 **Live app:** [https://tanishq-kushwaha.github.io/ZenDoc/](https://tanishq-kushwaha.github.io/ZenDoc/)
 
+---
+
+## 🏗️ Architecture
+
+<p align="center">
+  <img src="assets/architecture.png" alt="ZenDoc Architecture Diagram" width="800" />
+</p>
+
+> 📊 [View interactive diagram on GitDiagram →](https://gitdiagram.com/tanishq-kushwaha/zendoc)
+
+**Data flow:**
+- **User** selects a tool + provides files
+- **`app.js`** orchestrates (routing, state, file handling)
+- **Tool modules** do the work:
+  - `pdf-tools.js` → PDF operations (via pdf-lib + pdf.js)
+  - `image-tools.js` → Image operations (via Canvas API + browser-image-compression)
+  - `utility-tools.js` → ZIP, hash, Base64, file info
+- **`ui.js`** updates the interface (toasts, progress, modals)
+- **`utils.js`** provides shared helpers
+- **All processing happens in the browser** — no server calls
 
 ---
 
@@ -104,8 +124,6 @@ After the first visit, ZenDoc can work **offline** (service worker / PWA).
 No backend. No analytics. No tracking scripts.
 
 
----
-[![Architecture diagram of tanishq-kushwaha/zendoc](https://gitdiagram.com/tanishq-kushwaha/zendoc/diagram.png)](https://gitdiagram.com/tanishq-kushwaha/zendoc?utm_source=readme&utm_medium=picture)
 ---
 
 ## Project structure
