@@ -19,7 +19,6 @@
   <img src="assets/architecture.png" alt="ZenDoc Architecture Diagram" width="800" />
 </p>
 
-> 📊 [View interactive diagram on GitDiagram →](https://gitdiagram.com/tanishq-kushwaha/zendoc)
 
 **Data flow:**
 
