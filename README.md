@@ -22,6 +22,7 @@
 > 📊 [View interactive diagram on GitDiagram →](https://gitdiagram.com/tanishq-kushwaha/zendoc)
 
 **Data flow:**
+
 - **User** selects a tool + provides files
 - **`app.js`** orchestrates (routing, state, file handling)
 - **Tool modules** do the work:
@@ -36,14 +37,14 @@
 
 ## Why ZenDoc?
 
-| Feature | Description |
-|--------|-------------|
-| 🔒 **Private** | Files never leave your browser. No uploads, no servers, no accounts. |
-| ⚡ **Fast** | All processing runs on your device. |
-| 📴 **Offline** | Works without internet after the first load (PWA-ready). |
-| 💸 **Free** | 27 tools — no ads, no signup, no usage limits. |
-| 🔐 **Secure** | Real **AES-256** encryption for PDF password protection. |
-| 🌙 **Dark mode** | Built-in light/dark theme toggle. |
+| Feature          | Description                                                          |
+| ---------------- | -------------------------------------------------------------------- |
+| 🔒 **Private**   | Files never leave your browser. No uploads, no servers, no accounts. |
+| ⚡ **Fast**      | All processing runs on your device.                                  |
+| 📴 **Offline**   | Works without internet after the first load (PWA-ready).             |
+| 💸 **Free**      | 27 tools — no ads, no signup, no usage limits.                       |
+| 🔐 **Secure**    | Real **AES-256** encryption for PDF password protection.             |
+| 🌙 **Dark mode** | Built-in light/dark theme toggle.                                    |
 
 ---
 
@@ -51,50 +52,50 @@
 
 ### 📄 PDF (13)
 
-| Tool | Description |
-|------|-------------|
-| **Merge** | Combine multiple PDFs into one |
-| **Split** | Divide a PDF by page ranges |
-| **Compress** | Reduce PDF size |
-| **Delete Pages** | Remove specific pages |
-| **Extract Pages** | Extract selected pages into a new PDF |
-| **Rotate** | Rotate pages 90° / 180° / 270° |
-| **Reorder** | Drag-and-drop page reordering |
-| **Watermark** | Add a text watermark to every page |
-| **Page Numbers** | Add page numbers |
-| **Remove Metadata** | Strip author, title, and other metadata |
-| **Password Protect** | Lock PDFs with **AES-256** encryption |
-| **Unlock** | Remove password protection (if you know the password) |
-| **Extract Text** | Pull text content from a PDF |
+| Tool                 | Description                                           |
+| -------------------- | ----------------------------------------------------- |
+| **Merge**            | Combine multiple PDFs into one                        |
+| **Split**            | Divide a PDF by page ranges                           |
+| **Compress**         | Reduce PDF size                                       |
+| **Delete Pages**     | Remove specific pages                                 |
+| **Extract Pages**    | Extract selected pages into a new PDF                 |
+| **Rotate**           | Rotate pages 90° / 180° / 270°                        |
+| **Reorder**          | Drag-and-drop page reordering                         |
+| **Watermark**        | Add a text watermark to every page                    |
+| **Page Numbers**     | Add page numbers                                      |
+| **Remove Metadata**  | Strip author, title, and other metadata               |
+| **Password Protect** | Lock PDFs with **AES-256** encryption                 |
+| **Unlock**           | Remove password protection (if you know the password) |
+| **Extract Text**     | Pull text content from a PDF                          |
 
 ### 🔄 Convert (2)
 
-| Tool | Description |
-|------|-------------|
+| Tool             | Description                        |
+| ---------------- | ---------------------------------- |
 | **Images → PDF** | Turn one or more images into a PDF |
-| **PDF → Images** | Export PDF pages as images |
+| **PDF → Images** | Export PDF pages as images         |
 
 ### 🖼️ Image (7)
 
-| Tool | Description |
-|------|-------------|
-| **Compress** | Reduce image file size |
-| **Resize** | Change dimensions |
+| Tool               | Description                         |
+| ------------------ | ----------------------------------- |
+| **Compress**       | Reduce image file size              |
+| **Resize**         | Change dimensions                   |
 | **Convert Format** | Switch between common image formats |
-| **Crop** | Crop to a custom region |
-| **Rotate / Flip** | Rotate or flip images |
-| **Remove EXIF** | Strip metadata from images |
-| **Watermark** | Add a text watermark |
+| **Crop**           | Crop to a custom region             |
+| **Rotate / Flip**  | Rotate or flip images               |
+| **Remove EXIF**    | Strip metadata from images          |
+| **Watermark**      | Add a text watermark                |
 
 ### 🔧 Utils (5)
 
-| Tool | Description |
-|------|-------------|
+| Tool          | Description                        |
+| ------------- | ---------------------------------- |
 | **File Info** | View size, type, and basic details |
-| **Blank PDF** | Generate an empty PDF |
-| **ZIP** | Create ZIP archives |
-| **Hash** | Compute SHA-1 / SHA-256 / SHA-512 |
-| **Base64** | Encode / decode Base64 |
+| **Blank PDF** | Generate an empty PDF              |
+| **ZIP**       | Create ZIP archives                |
+| **Hash**      | Compute SHA-1 / SHA-256 / SHA-512  |
+| **Base64**    | Encode / decode Base64             |
 
 ---
 
@@ -122,7 +123,6 @@ After the first visit, ZenDoc can work **offline** (service worker / PWA).
 - **PWA** — `manifest.json` + offline-friendly design
 
 No backend. No analytics. No tracking scripts.
-
 
 ---
 
@@ -198,9 +198,9 @@ Copyright (c) 2026 Tanishq Kushwaha
 ## Author
 
 **Tanishq Kushwaha**  
-IT Diploma student · Web development & C · Junior SDE certified  
+IT Diploma student · Web development & C · Junior SDE certified
 
-- Portfolio: [tanishq-kushwaha.github.io/tanishq-portfolio](https://tanishq-kushwaha.github.io/tanishq-portfolio/)  
+- Portfolio: [tanishq-kushwaha.github.io/tanishq-portfolio](https://tanishq-kushwaha.github.io/tanishq-portfolio/)
 - GitHub: [github.com/Tanishq-kushwaha](https://github.com/Tanishq-kushwaha)
 
 ---
@@ -209,9 +209,9 @@ IT Diploma student · Web development & C · Junior SDE certified
 
 Issues and pull requests are welcome. If you add a tool or fix a bug:
 
-1. Fork the repo  
-2. Create a feature branch  
-3. Open a PR with a clear description  
+1. Fork the repo
+2. Create a feature branch
+3. Open a PR with a clear description
 
 Keep everything **client-side** — no backend dependencies.
 
