@@ -240,6 +240,24 @@ function initUpload() {
 
 function initActions() {
   document.getElementById('processBtn')?.addEventListener('click', runTool);
+
+  // ✅ Event delegation — ONE listener for all Select/Deselect clicks
+  //    Works for any tool, any re-render, no accumulation.
+  document.getElementById('optionsPanel')?.addEventListener('click', (e) => {
+    if (e.target.id === 'selectAllPages') {
+      const grid = document.getElementById('pageGrid');
+      grid?.querySelectorAll('.page-thumb').forEach(el => {
+        state.selectedPages.add(+el.dataset.index);
+        el.classList.add('selected');
+      });
+    }
+    if (e.target.id === 'deselectAllPages') {
+      state.selectedPages.clear();
+      document.getElementById('pageGrid')
+        ?.querySelectorAll('.page-thumb')
+        .forEach(el => el.classList.remove('selected'));
+    }
+  });
 }
 
 /* ------------------------------------------------------------------ */
